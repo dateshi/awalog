@@ -1,11 +1,60 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>AWA　Log</title>
+    <title>AWA Log</title>
+    <!-- Add some CSS to change client UI -->
+    <style>
+    body {
+        background-color: #232F3E;
+        }
+    label, button {
+        color: #FF9900;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 40px;
+        }
+     input {
+        color: #232F3E;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 20px;
+        }
+    </style>
+    <script>
+        // define the callAPI function that takes a first name and last name as parameters
+        var callAPI = (deck1,deck2,win)=>{
+            // instantiate a headers object
+            var myHeaders = new Headers();
+            // add content type header to object
+            myHeaders.append("Content-Type", "application/json");
+            // using built in JSON utility package turn object to string and store in a variable
+            var raw = JSON.stringify({"deck1":deck1,"deck2":deck2,"win":win});
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            // make API call with parameters and use promises to get response
+            fetch("YOUR-API-INVOKE-URL", requestOptions)
+            .then(response => response.text())
+            .then(result => alert(JSON.parse(result).body))
+            .catch(error => console.log('error', error));
+        }
+    </script>
 </head>
-
 <body>
-    Hello World 
+    <form>
+        <label>Deck1 :</label>
+        <input type="text" id="deck1">
+        <label>Deck2 :</label>
+        <input type="text" id="deck2">
+        <label>Win :</label>
+        <input type="text" id="win">
+        <!-- set button onClick method to call function we defined passing input values as parameters -->
+        <button type="button" onclick="callAPI(document.getElementById('deck1').value,document.getElementById('deck2').value,document.getElementById('win').value)">Register</button>
+    </form>
 </body>
 </html>
