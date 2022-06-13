@@ -1,6 +1,13 @@
-import { Col, Container, ProgressBar, Row } from "react-bootstrap";
+import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
 import AWANav from "./AWANav";
 import "./LP.scss";
+
+const lifeValues = [
+  [-50, -100, -200],
+  [-300, -400, -500],
+  [-600, -800, -900],
+  [-1000, -2000, -3000],
+];
 
 const LifePoint = (props: { name: string; lp: number }) => {
   const { name, lp } = props;
@@ -23,6 +30,35 @@ const LifePoint = (props: { name: string; lp: number }) => {
   );
 };
 
+const ControlPanel = (props: { addLP: (lp: number) => void }) => {
+  return (
+    <Container>
+      {lifeValues.map((row, i) => {
+        return (
+          <Row style={{ padding: 15 }} key={i}>
+            {row.map((val, j) => {
+              return (
+                <Col key={j}>
+                  <Button
+                    variant="outline-secondary"
+                    style={{
+                      width: "100px",
+                      height: "60px",
+                    }}
+                    onClick={() => props.addLP(val)}
+                  >
+                    {val}
+                  </Button>
+                </Col>
+              );
+            })}
+          </Row>
+        );
+      })}
+    </Container>
+  );
+};
+
 const LP = () => {
   return (
     <>
@@ -35,6 +71,15 @@ const LP = () => {
           <Col md={{ offset: 6 }}>
             <LifePoint name="代行天使" lp={3000} />
           </Col>
+        </Row>
+        <Row>
+          {[1, 1].map((_, i) => {
+            return (
+              <Col key={i}>
+                <ControlPanel addLP={(lp) => console.log(lp)} />
+              </Col>
+            );
+          })}
         </Row>
       </Container>
     </>
