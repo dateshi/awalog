@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
 import AWANav from "./AWANav";
 import "./LP.scss";
@@ -60,23 +61,36 @@ const ControlPanel = (props: { addLP: (lp: number) => void }) => {
 };
 
 const LP = () => {
+  const [players, setPlayers] = useState([{ lp: 8000 }, { lp: 8000 }]);
+  const addLP = (i: number) => (lp: number) => {
+    const player = players[i];
+    const to = Math.max(0, player.lp + lp);
+    setPlayers(
+      players.map((player, j) => {
+        if (j === i) {
+          return { ...player, lp: to };
+        }
+        return player;
+      })
+    );
+  };
   return (
     <>
       <AWANav />
       <Container>
         <Row>
           <Col>
-            <LifePoint name="旋風BF" lp={8000} />
+            <LifePoint name="旋風BF" lp={players[0].lp} />
           </Col>
           <Col md={{ offset: 6 }}>
-            <LifePoint name="代行天使" lp={3000} />
+            <LifePoint name="代行天使" lp={players[1].lp} />
           </Col>
         </Row>
         <Row>
-          {[1, 1].map((_, i) => {
+          {players.map((player, i) => {
             return (
               <Col key={i}>
-                <ControlPanel addLP={(lp) => console.log(lp)} />
+                <ControlPanel addLP={addLP(i)} />
               </Col>
             );
           })}
