@@ -56,6 +56,41 @@ const ControlPanel = (props: { addLP: (lp: number) => void }) => {
           </Row>
         );
       })}
+      <Row style={{ padding: 15 }}>
+        <Col>
+          <Button
+            variant="outline-secondary"
+            style={{
+              width: "100px",
+              height: "60px",
+            }}
+          >
+            +
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            variant="outline-secondary"
+            style={{
+              width: "100px",
+              height: "60px",
+            }}
+          >
+            -
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            variant="outline-secondary"
+            style={{
+              width: "100px",
+              height: "60px",
+            }}
+          >
+            1/2
+          </Button>
+        </Col>
+      </Row>
     </Container>
   );
 };
