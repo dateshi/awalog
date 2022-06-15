@@ -31,10 +31,86 @@ const LifePoint = (props: { name: string; lp: number }) => {
   );
 };
 
-const ControlPanel = (props: { addLP: (lp: number) => void }) => {
+type Mode = "normal" | "+" | "-";
+
+const ControlPanel = (props: {
+  addLP: (lp: number) => void;
+  mode: Mode;
+  changeMode: (mode: Mode) => void;
+}) => {
+  if (props.mode === "normal") {
+    return (
+      <Container>
+        {lifeValues.map((row, i) => {
+          return (
+            <Row style={{ padding: 15 }} key={i}>
+              {row.map((val, j) => {
+                return (
+                  <Col key={j}>
+                    <Button
+                      variant="outline-secondary"
+                      style={{
+                        width: "100px",
+                        height: "60px",
+                      }}
+                      onClick={() => props.addLP(val)}
+                    >
+                      {val}
+                    </Button>
+                  </Col>
+                );
+              })}
+            </Row>
+          );
+        })}
+        <Row style={{ padding: 15 }}>
+          <Col>
+            <Button
+              variant="outline-secondary"
+              style={{
+                width: "100px",
+                height: "60px",
+              }}
+              onClick={() => props.changeMode("+")}
+            >
+              +
+            </Button>
+          </Col>
+          <Col>
+            <Button
+              variant="outline-secondary"
+              style={{
+                width: "100px",
+                height: "60px",
+              }}
+              onClick={() => props.changeMode("-")}
+            >
+              -
+            </Button>
+          </Col>
+          <Col>
+            <Button
+              variant="outline-secondary"
+              style={{
+                width: "100px",
+                height: "60px",
+              }}
+            >
+              1/2
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+  const buttons = [
+    ["7", "8", "9"],
+    ["4", "5", "6"],
+    ["1", "2", "3"],
+  ];
   return (
     <Container>
-      {lifeValues.map((row, i) => {
+      {buttons.map((row, i) => {
         return (
           <Row style={{ padding: 15 }} key={i}>
             {row.map((val, j) => {
@@ -46,7 +122,7 @@ const ControlPanel = (props: { addLP: (lp: number) => void }) => {
                       width: "100px",
                       height: "60px",
                     }}
-                    onClick={() => props.addLP(val)}
+                    // onClick={() => props.addLP(val)}
                   >
                     {val}
                   </Button>
@@ -65,6 +141,43 @@ const ControlPanel = (props: { addLP: (lp: number) => void }) => {
               height: "60px",
             }}
           >
+            0
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            variant="outline-secondary"
+            style={{
+              width: "100px",
+              height: "60px",
+            }}
+          >
+            00
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            variant="outline-secondary"
+            style={{
+              width: "100px",
+              height: "60px",
+            }}
+            onClick={() => props.changeMode("normal")}
+          >
+            =
+          </Button>
+        </Col>
+      </Row>
+      <Row style={{ padding: 15 }}>
+        <Col>
+          <Button
+            variant="outline-secondary"
+            style={{
+              width: "100px",
+              height: "60px",
+            }}
+            onClick={() => props.changeMode("+")}
+          >
             +
           </Button>
         </Col>
@@ -75,6 +188,7 @@ const ControlPanel = (props: { addLP: (lp: number) => void }) => {
               width: "100px",
               height: "60px",
             }}
+            onClick={() => props.changeMode("-")}
           >
             -
           </Button>
@@ -96,7 +210,10 @@ const ControlPanel = (props: { addLP: (lp: number) => void }) => {
 };
 
 const LP = () => {
-  const [players, setPlayers] = useState([{ lp: 8000 }, { lp: 8000 }]);
+  const [players, setPlayers] = useState([
+    { lp: 8000, mode: "normal" as Mode },
+    { lp: 8000, mode: "normal" as Mode },
+  ]);
   const addLP = (i: number) => (lp: number) => {
     const player = players[i];
     const to = Math.max(0, player.lp + lp);
@@ -104,6 +221,16 @@ const LP = () => {
       players.map((player, j) => {
         if (j === i) {
           return { ...player, lp: to };
+        }
+        return player;
+      })
+    );
+  };
+  const changeMode = (i: number) => (mode: Mode) => {
+    setPlayers(
+      players.map((player, j) => {
+        if (j === i) {
+          return { ...player, mode: mode };
         }
         return player;
       })
@@ -125,7 +252,11 @@ const LP = () => {
           {players.map((player, i) => {
             return (
               <Col key={i}>
-                <ControlPanel addLP={addLP(i)} />
+                <ControlPanel
+                  addLP={addLP(i)}
+                  mode={players[i].mode}
+                  changeMode={changeMode(i)}
+                />
               </Col>
             );
           })}
