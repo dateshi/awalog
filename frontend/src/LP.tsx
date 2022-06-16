@@ -35,6 +35,7 @@ type Mode = "normal" | "+" | "-";
 
 const ControlPanel = (props: {
   addLP: (lp: number) => void;
+  halfLP: () => void;
   mode: Mode;
   changeMode: (mode: Mode) => void;
 }) => {
@@ -95,6 +96,7 @@ const ControlPanel = (props: {
                 width: "100px",
                 height: "60px",
               }}
+              onClick={props.halfLP}
             >
               1/2
             </Button>
@@ -200,6 +202,10 @@ const ControlPanel = (props: {
               width: "100px",
               height: "60px",
             }}
+            onClick={() => {
+              props.halfLP();
+              props.changeMode("normal");
+            }}
           >
             1/2
           </Button>
@@ -217,6 +223,18 @@ const LP = () => {
   const addLP = (i: number) => (lp: number) => {
     const player = players[i];
     const to = Math.max(0, player.lp + lp);
+    setPlayers(
+      players.map((player, j) => {
+        if (j === i) {
+          return { ...player, lp: to };
+        }
+        return player;
+      })
+    );
+  };
+  const halfLP = (i: number) => () => {
+    const player = players[i];
+    const to = Math.ceil(player.lp / 2);
     setPlayers(
       players.map((player, j) => {
         if (j === i) {
@@ -254,6 +272,7 @@ const LP = () => {
               <Col key={i}>
                 <ControlPanel
                   addLP={addLP(i)}
+                  halfLP={halfLP(i)}
                   mode={players[i].mode}
                   changeMode={changeMode(i)}
                 />
