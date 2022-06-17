@@ -38,6 +38,7 @@ const ControlPanel = (props: {
   halfLP: () => void;
   mode: Mode;
   changeMode: (mode: Mode) => void;
+  pushKey: (key: string) => void;
 }) => {
   if (props.mode === "normal") {
     return (
@@ -109,6 +110,7 @@ const ControlPanel = (props: {
     ["7", "8", "9"],
     ["4", "5", "6"],
     ["1", "2", "3"],
+    ["0", "00", "="],
   ];
   return (
     <Container>
@@ -124,7 +126,7 @@ const ControlPanel = (props: {
                       width: "100px",
                       height: "60px",
                     }}
-                    // onClick={() => props.addLP(val)}
+                    onClick={() => props.pushKey(val)}
                   >
                     {val}
                   </Button>
@@ -134,42 +136,6 @@ const ControlPanel = (props: {
           </Row>
         );
       })}
-      <Row style={{ padding: 15 }}>
-        <Col>
-          <Button
-            variant="outline-secondary"
-            style={{
-              width: "100px",
-              height: "60px",
-            }}
-          >
-            0
-          </Button>
-        </Col>
-        <Col>
-          <Button
-            variant="outline-secondary"
-            style={{
-              width: "100px",
-              height: "60px",
-            }}
-          >
-            00
-          </Button>
-        </Col>
-        <Col>
-          <Button
-            variant="outline-secondary"
-            style={{
-              width: "100px",
-              height: "60px",
-            }}
-            onClick={() => props.changeMode("normal")}
-          >
-            =
-          </Button>
-        </Col>
-      </Row>
       <Row style={{ padding: 15 }}>
         <Col>
           <Button
@@ -217,8 +183,8 @@ const ControlPanel = (props: {
 
 const LP = () => {
   const [players, setPlayers] = useState([
-    { lp: 8000, mode: "normal" as Mode },
-    { lp: 8000, mode: "normal" as Mode },
+    { lp: 8000, mode: "normal" as Mode, buf: 0 },
+    { lp: 8000, mode: "normal" as Mode, buf: 0 },
   ]);
   const addLP = (i: number) => (lp: number) => {
     const player = players[i];
@@ -254,6 +220,33 @@ const LP = () => {
       })
     );
   };
+  const pushKey = (i: number) => (key: string) => {
+    const player = players[i];
+    if (key === "=") {
+      const sign = player.mode === "+" ? 1 : -1;
+      setPlayers(
+        players.map((player, j) => {
+          if (j === i) {
+            return {
+              ...player,
+              lp: player.lp + sign * player.buf,
+              buf: 0,
+            };
+          }
+          return player;
+        })
+      );
+    } else {
+      setPlayers(
+        players.map((player, j) => {
+          if (j === i) {
+            return { ...player, buf: Number(`${player.buf}${key}`) };
+          }
+          return player;
+        })
+      );
+    }
+  };
   return (
     <>
       <AWANav />
@@ -262,7 +255,9 @@ const LP = () => {
           <Col>
             <LifePoint name="旋風BF" lp={players[0].lp} />
           </Col>
-          <Col md={{ offset: 6 }}>
+          <Col>{players[0].buf}</Col>
+          <Col md={{ offset: 5 }}>{players[1].buf}</Col>
+          <Col>
             <LifePoint name="代行天使" lp={players[1].lp} />
           </Col>
         </Row>
@@ -275,6 +270,7 @@ const LP = () => {
                   halfLP={halfLP(i)}
                   mode={players[i].mode}
                   changeMode={changeMode(i)}
+                  pushKey={pushKey(i)}
                 />
               </Col>
             );
