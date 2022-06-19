@@ -55,7 +55,7 @@ const LP = () => {
           if (j === i) {
             return {
               ...player,
-              lp: player.lp + sign * player.buf,
+              lp: Math.max(0, player.lp + sign * player.buf),
               buf: 0,
             };
           }
