@@ -117,7 +117,9 @@ const Controller = (props: Props) => {
       <Row style={{ padding: 15 }}>
         <Col>
           <Button
-            variant="outline-secondary"
+            variant={
+              props.mode === ("+" as Mode) ? "secondary" : "outline-secondary"
+            }
             style={{
               width: "100px",
               height: "60px",
@@ -129,7 +131,9 @@ const Controller = (props: Props) => {
         </Col>
         <Col>
           <Button
-            variant="outline-secondary"
+            variant={
+              props.mode === ("-" as Mode) ? "secondary" : "outline-secondary"
+            }
             style={{
               width: "100px",
               height: "60px",
