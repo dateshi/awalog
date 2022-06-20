@@ -56,6 +56,7 @@ const LP = () => {
             return {
               ...player,
               lp: Math.max(0, player.lp + sign * player.buf),
+              mode: "normal",
               buf: 0,
             };
           }
@@ -79,12 +80,20 @@ const LP = () => {
       <Container>
         <Row>
           <Col>
-            <Window name="旋風BF" lp={players[0].lp} />
+            <Window
+              name="旋風BF"
+              lp={players[0].lp}
+              buf={players[0].buf}
+              mode={players[0].mode}
+            />
           </Col>
-          <Col>{players[0].buf}</Col>
-          <Col md={{ offset: 5 }}>{players[1].buf}</Col>
-          <Col>
-            <Window name="代行天使" lp={players[1].lp} />
+          <Col md={{ offset: 7 }}>
+            <Window
+              name="代行天使"
+              lp={players[1].lp}
+              buf={players[1].buf}
+              mode={players[1].mode}
+            />
           </Col>
         </Row>
         <Row>
