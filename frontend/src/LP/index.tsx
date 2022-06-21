@@ -40,7 +40,8 @@ const LP = () => {
     setPlayers(
       players.map((player, j) => {
         if (j === i) {
-          return { ...player, mode: mode };
+          const buf = mode === "normal" ? 0 : player.buf;
+          return { ...player, buf, mode };
         }
         return player;
       })

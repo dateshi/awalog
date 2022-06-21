@@ -151,11 +151,10 @@ const Controller = (props: Props) => {
               height: "60px",
             }}
             onClick={() => {
-              props.halfLP();
               props.changeMode("normal");
             }}
           >
-            1/2
+            C
           </Button>
         </Col>
       </Row>
