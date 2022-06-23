@@ -4,6 +4,7 @@ import AWANav from "../AWANav";
 import Window from "./Window";
 import "./style.scss";
 import Controller from "./Controller";
+import Toolbar from "./Toolbar";
 
 export type Mode = "normal" | "+" | "-";
 
@@ -79,6 +80,7 @@ const LP = () => {
     <>
       <AWANav />
       <Container>
+        <Toolbar />
         <Row>
           <Col>
             <Window
