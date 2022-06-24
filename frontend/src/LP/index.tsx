@@ -8,74 +8,56 @@ import Toolbar from "./Toolbar";
 
 export type Mode = "normal" | "+" | "-";
 
-const LP = () => {
-  const [players, setPlayers] = useState([
-    { lp: 8000, mode: "normal" as Mode, buf: 0 },
-    { lp: 8000, mode: "normal" as Mode, buf: 0 },
-  ]);
-  const addLP = (i: number) => (lp: number) => {
-    const player = players[i];
-    const to = Math.max(0, player.lp + lp);
-    setPlayers(
-      players.map((player, j) => {
-        if (j === i) {
-          return { ...player, lp: to };
-        }
-        return player;
-      })
-    );
+type Player = {
+  lp: number;
+  mode: Mode;
+  buf: number;
+};
+
+const usePlayer = () => {
+  const [player, setPlayer] = useState<Player>({
+    lp: 8000,
+    mode: "normal" as Mode,
+    buf: 0,
+  });
+
+  const addLP = (lp: number) => {
+    setPlayer({ ...player, lp: Math.max(0, player.lp + lp) });
   };
-  const halfLP = (i: number) => () => {
-    const player = players[i];
-    const to = Math.ceil(player.lp / 2);
-    setPlayers(
-      players.map((player, j) => {
-        if (j === i) {
-          return { ...player, lp: to };
-        }
-        return player;
-      })
-    );
+  const halfLP = () => {
+    setPlayer({ ...player, lp: Math.ceil(player.lp / 2) });
   };
-  const changeMode = (i: number) => (mode: Mode) => {
-    setPlayers(
-      players.map((player, j) => {
-        if (j === i) {
-          const buf = mode === "normal" ? 0 : player.buf;
-          return { ...player, buf, mode };
-        }
-        return player;
-      })
-    );
+  const changeMode = (mode: Mode) => {
+    setPlayer({ ...player, buf: mode === "normal" ? 0 : player.buf, mode });
   };
-  const pushKey = (i: number) => (key: string) => {
-    const player = players[i];
+  const pushKey = (key: string) => {
     if (key === "=") {
       const sign = player.mode === "+" ? 1 : -1;
-      setPlayers(
-        players.map((player, j) => {
-          if (j === i) {
-            return {
-              ...player,
-              lp: Math.max(0, player.lp + sign * player.buf),
-              mode: "normal",
-              buf: 0,
-            };
-          }
-          return player;
-        })
-      );
+      setPlayer({
+        ...player,
+        lp: Math.max(0, player.lp + sign * player.buf),
+        mode: "normal",
+        buf: 0,
+      });
     } else {
-      setPlayers(
-        players.map((player, j) => {
-          if (j === i) {
-            return { ...player, buf: Number(`${player.buf}${key}`) };
-          }
-          return player;
-        })
-      );
+      setPlayer({ ...player, buf: Number(`${player.buf}${key}`) });
     }
   };
+
+  return {
+    player,
+    ctl: {
+      addLP,
+      halfLP,
+      changeMode,
+      pushKey,
+    },
+  };
+};
+
+const LP = () => {
+  const { player: p1, ctl: ctl1 } = usePlayer();
+  const { player: p2, ctl: ctl2 } = usePlayer();
   return (
     <>
       <AWANav />
@@ -83,36 +65,31 @@ const LP = () => {
         <Toolbar />
         <Row>
           <Col>
-            <Window
-              name="旋風BF"
-              lp={players[0].lp}
-              buf={players[0].buf}
-              mode={players[0].mode}
-            />
+            <Window name="旋風BF" lp={p1.lp} buf={p1.buf} mode={p1.mode} />
           </Col>
           <Col md={{ offset: 7 }}>
-            <Window
-              name="代行天使"
-              lp={players[1].lp}
-              buf={players[1].buf}
-              mode={players[1].mode}
-            />
+            <Window name="代行天使" lp={p2.lp} buf={p2.buf} mode={p2.mode} />
           </Col>
         </Row>
         <Row>
-          {players.map((player, i) => {
-            return (
-              <Col key={i}>
-                <Controller
-                  addLP={addLP(i)}
-                  halfLP={halfLP(i)}
-                  mode={players[i].mode}
-                  changeMode={changeMode(i)}
-                  pushKey={pushKey(i)}
-                />
-              </Col>
-            );
-          })}
+          <Col>
+            <Controller
+              mode={p1.mode}
+              addLP={ctl1.addLP}
+              halfLP={ctl1.halfLP}
+              changeMode={ctl1.changeMode}
+              pushKey={ctl1.pushKey}
+            />
+          </Col>
+          <Col>
+            <Controller
+              mode={p2.mode}
+              addLP={ctl2.addLP}
+              halfLP={ctl2.halfLP}
+              changeMode={ctl2.changeMode}
+              pushKey={ctl2.pushKey}
+            />
+          </Col>
         </Row>
       </Container>
     </>
