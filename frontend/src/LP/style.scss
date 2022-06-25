@@ -1,3 +1,25 @@
+.sides {
+  display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.side {
+  width: 450px;
+  display: flex;
+	flex-direction: column;
+}
+
+.lp-box-left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.lp-box-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .lp-parent {
   padding: 10px;
   width: 200px;

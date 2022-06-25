@@ -1,5 +1,5 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { Mode } from ".";
+import { Mode } from "./lp";
 
 const quickButtons = [
   [-50, -100, -200],

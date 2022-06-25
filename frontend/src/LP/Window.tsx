@@ -1,15 +1,16 @@
 import { ProgressBar } from "react-bootstrap";
-import { Mode } from ".";
+import { Mode } from "./lp";
 
 type Props = {
   name: string;
   lp: number;
   mode: Mode;
   buf: number;
+  isLeft: boolean;
 };
 
 const Window = (props: Props) => {
-  const { name, lp } = props;
+  const { name, lp, mode, buf, isLeft } = props;
   const now = Math.floor(lp / 80);
   const variant = (() => {
     if (lp > 4000) {
@@ -20,14 +21,14 @@ const Window = (props: Props) => {
       return "danger";
     }
   })();
-  const sign = props.buf === 0 || props.mode === "normal" ? "" : props.mode;
+  const sign = buf === 0 || mode === "normal" ? "" : mode;
   return (
-    <div className="lp-parent bg-light text-black">
-      <div className="lp-header">{name}</div>
-      <ProgressBar variant={variant} now={now}></ProgressBar>
-      <div className="lp">{`${props.lp}${sign}${
-        props.buf !== 0 ? props.buf : ""
-      }`}</div>
+    <div className={isLeft ? "lp-box-left" : "lp-box-right"}>
+      <div className="lp-parent bg-light text-black">
+        <div className="lp-header">{name}</div>
+        <ProgressBar variant={variant} now={now}></ProgressBar>
+        <div className="lp">{`${lp}${sign}${buf !== 0 ? buf : ""}`}</div>
+      </div>
     </div>
   );
 };
