@@ -17,11 +17,26 @@ const Coin = () => {
     </div>
   );
 };
-const Toolbar = () => {
+
+const LPLog = (props: Pick<Props, "showLPHistoryModal">) => (
+  <Button variant="outline-secondary" onClick={props.showLPHistoryModal}>
+    ログ
+  </Button>
+);
+
+type Props = {
+  showLPHistoryModal: () => void;
+};
+
+const Toolbar = (props: Props) => {
+  const { showLPHistoryModal } = props;
   return (
     <Row>
       <Col>
         <Coin />
+      </Col>
+      <Col>
+        <LPLog showLPHistoryModal={showLPHistoryModal} />
       </Col>
     </Row>
   );
