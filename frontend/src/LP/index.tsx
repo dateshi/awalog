@@ -15,7 +15,12 @@ const LP = () => {
     <>
       <AWANav />
       <Container>
-        <Toolbar showLPHistoryModal={showLPHistoryModal} />
+        <Toolbar
+          showLPHistoryModal={showLPHistoryModal}
+          lpHistoryCtl={historyCtl}
+          player1Ctl={ctl1}
+          player2Ctl={ctl2}
+        />
         <div className="sides">
           <Side player={p1} ctl={ctl1} isLeft={true}></Side>
           <Side player={p2} ctl={ctl2} isLeft={false}></Side>
