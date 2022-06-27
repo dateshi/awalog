@@ -28,7 +28,7 @@ export const useLPHistory = () => {
   const addLog = (i: number, from: number, to: number) => {
     setHistory({
       logs: [
-        ...lpHistory.logs,
+        ...lpHistory.logs.slice(0, lpHistory.head + 1),
         {
           playerID: i,
           from,
@@ -70,7 +70,10 @@ export const usePlayer = (id: number, historyCtl: LPHistoryCtl) => {
     historyCtl.addLog(id, from, to );
   };
   const halfLP = () => {
-    setPlayer({ ...player, lp: Math.ceil(player.lp / 2) });
+    const from = player.lp;
+    const to = Math.ceil(player.lp / 2);
+    setPlayer({ ...player, lp: to });
+    historyCtl.addLog(id, from, to );
   };
   const undoLP = (log: LPLog) => {
     if (log.playerID === player.id) {
@@ -83,12 +86,15 @@ export const usePlayer = (id: number, historyCtl: LPHistoryCtl) => {
   const pushKey = (key: string) => {
     if (key === "=") {
       const sign = player.mode === "+" ? 1 : -1;
+      const from = player.lp;
+      const to = Math.max(0, player.lp + sign * player.buf);
       setPlayer({
         ...player,
-        lp: Math.max(0, player.lp + sign * player.buf),
+        lp: to,
         mode: "normal",
         buf: 0,
       });
+      historyCtl.addLog(id, from, to);
     } else {
       setPlayer({ ...player, buf: Number(`${player.buf}${key}`) });
     }
