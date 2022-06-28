@@ -46,11 +46,20 @@ export const useLPHistory = () => {
     });
     return res;
   }
+  const redo = () => {
+    const res = lpHistory.logs[lpHistory.head + 1];
+    setHistory({
+      logs: lpHistory.logs,
+      head: lpHistory.head + 1
+    });
+    return res;
+  }
   return {
     lpHistory: lpHistory,
     ctl: {
       addLog,
       undo,
+      redo,
     }
   }
 }
@@ -80,6 +89,11 @@ export const usePlayer = (id: number, historyCtl: LPHistoryCtl) => {
       setPlayer({ ...player, lp: log.from })
     }
   }
+  const redoLP = (log: LPLog) => {
+    if (log.playerID === player.id) {
+      setPlayer({ ...player, lp: log.to })
+    }
+  }
   const changeMode = (mode: Mode) => {
     setPlayer({ ...player, buf: mode === "normal" ? 0 : player.buf, mode });
   };
@@ -106,6 +120,7 @@ export const usePlayer = (id: number, historyCtl: LPHistoryCtl) => {
       addLP,
       halfLP,
       undoLP,
+      redoLP,
       changeMode,
       pushKey,
     },

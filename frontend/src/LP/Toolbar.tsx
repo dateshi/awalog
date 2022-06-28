@@ -25,6 +25,12 @@ const Undo = (props: { undo: () => void }) => (
   </Button>
 );
 
+const Redo = (props: { redo: () => void }) => (
+  <Button variant="outline-secondary" onClick={props.redo}>
+    進む
+  </Button>
+);
+
 const LPLog = (props: Pick<Props, "showLPHistoryModal">) => (
   <Button variant="outline-secondary" onClick={props.showLPHistoryModal}>
     ログ
@@ -45,6 +51,11 @@ const Toolbar = (props: Props) => {
     player1Ctl.undoLP(log);
     player2Ctl.undoLP(log);
   };
+  const redo = () => {
+    const log = lpHistoryCtl.redo();
+    player1Ctl.redoLP(log);
+    player2Ctl.redoLP(log);
+  };
   return (
     <Row>
       <Col>
@@ -52,6 +63,9 @@ const Toolbar = (props: Props) => {
       </Col>
       <Col>
         <Undo undo={undo} />
+      </Col>
+      <Col>
+        <Redo redo={redo} />
       </Col>
       <Col>
         <LPLog showLPHistoryModal={showLPHistoryModal} />
