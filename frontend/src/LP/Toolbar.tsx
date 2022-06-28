@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import { LPHistoryCtl, PlayertCtl } from "./lp";
+import { LPHistory, LPHistoryCtl, PlayertCtl } from "./lp";
 
 const Coin = () => {
   const [result, setResult] = useState<"表" | "裏" | "-">("-");
@@ -19,14 +19,22 @@ const Coin = () => {
   );
 };
 
-const Undo = (props: { undo: () => void }) => (
-  <Button variant="outline-secondary" onClick={props.undo}>
+const Undo = (props: { lpHistory: LPHistory; undo: () => void }) => (
+  <Button
+    variant="outline-secondary"
+    onClick={props.undo}
+    disabled={props.lpHistory.head < 0}
+  >
     戻る
   </Button>
 );
 
-const Redo = (props: { redo: () => void }) => (
-  <Button variant="outline-secondary" onClick={props.redo}>
+const Redo = (props: { lpHistory: LPHistory; redo: () => void }) => (
+  <Button
+    variant="outline-secondary"
+    onClick={props.redo}
+    disabled={props.lpHistory.head === props.lpHistory.logs.length - 1}
+  >
     進む
   </Button>
 );
@@ -39,13 +47,20 @@ const LPLog = (props: Pick<Props, "showLPHistoryModal">) => (
 
 type Props = {
   showLPHistoryModal: () => void;
+  lpHistory: LPHistory;
   lpHistoryCtl: LPHistoryCtl;
   player1Ctl: PlayertCtl;
   player2Ctl: PlayertCtl;
 };
 
 const Toolbar = (props: Props) => {
-  const { showLPHistoryModal, lpHistoryCtl, player1Ctl, player2Ctl } = props;
+  const {
+    showLPHistoryModal,
+    lpHistory,
+    lpHistoryCtl,
+    player1Ctl,
+    player2Ctl,
+  } = props;
   const undo = () => {
     const log = lpHistoryCtl.undo();
     player1Ctl.undoLP(log);
@@ -62,10 +77,10 @@ const Toolbar = (props: Props) => {
         <Coin />
       </Col>
       <Col>
-        <Undo undo={undo} />
+        <Undo lpHistory={lpHistory} undo={undo} />
       </Col>
       <Col>
-        <Redo redo={redo} />
+        <Redo lpHistory={lpHistory} redo={redo} />
       </Col>
       <Col>
         <LPLog showLPHistoryModal={showLPHistoryModal} />

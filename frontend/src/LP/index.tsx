@@ -17,6 +17,7 @@ const LP = () => {
       <Container>
         <Toolbar
           showLPHistoryModal={showLPHistoryModal}
+          lpHistory={lpHistory}
           lpHistoryCtl={historyCtl}
           player1Ctl={ctl1}
           player2Ctl={ctl2}
