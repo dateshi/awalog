@@ -16,6 +16,7 @@ export type LPHistoryCtl = ReturnType<typeof useLPHistory>["ctl"];
 
 export type Player = {
   id: number;
+  deck: string;
   lp: number;
   mode: Mode;
   buf: number;
@@ -64,14 +65,18 @@ export const useLPHistory = () => {
   }
 }
 
-export const usePlayer = (id: number, historyCtl: LPHistoryCtl) => {
+export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl) => {
   const [player, setPlayer] = useState<Player>({
     id,
+    deck: decks[0],
     lp: 8000,
     mode: "normal" as Mode,
     buf: 0,
   });
 
+  const setDeck = (deck: string) => {
+    setPlayer({...player, deck})
+  }
   const addLP = (lp: number) => {
     const from = player.lp;
     const to = Math.max(0, player.lp + lp)
@@ -117,6 +122,7 @@ export const usePlayer = (id: number, historyCtl: LPHistoryCtl) => {
   return {
     player,
     ctl: {
+      setDeck,
       addLP,
       halfLP,
       undoLP,

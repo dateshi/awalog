@@ -1,8 +1,9 @@
-import { ProgressBar } from "react-bootstrap";
+import { Form, ProgressBar } from "react-bootstrap";
 import { Mode } from "./lp";
 
 type Props = {
-  name: string;
+  decks: string[];
+  setDeck: (deck: string) => void;
   lp: number;
   mode: Mode;
   buf: number;
@@ -10,7 +11,7 @@ type Props = {
 };
 
 const Window = (props: Props) => {
-  const { name, lp, mode, buf, isLeft } = props;
+  const { decks, setDeck, lp, mode, buf, isLeft } = props;
   const now = Math.floor(lp / 80);
   const variant = (() => {
     if (lp > 4000) {
@@ -25,7 +26,16 @@ const Window = (props: Props) => {
   return (
     <div className={isLeft ? "lp-box-left" : "lp-box-right"}>
       <div className="lp-parent bg-light text-black">
-        <div className="lp-header">{name}</div>
+        <Form.Select
+          size="lg"
+          color="bg-light"
+          className="deck-selector"
+          onChange={(e) => setDeck(e.target.value)}
+        >
+          {decks.map((deck) => (
+            <option key={deck}>{deck}</option>
+          ))}
+        </Form.Select>
         <ProgressBar variant={variant} now={now}></ProgressBar>
         <div className="lp">{`${lp}${sign}${buf !== 0 ? buf : ""}`}</div>
       </div>

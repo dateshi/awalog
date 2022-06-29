@@ -3,17 +3,19 @@ import { Player, PlayertCtl } from "./lp";
 import Window from "./Window";
 
 type Props = {
+  decks: string[];
   player: Player;
   ctl: PlayertCtl;
   isLeft: boolean;
 };
 
 const Side = (props: Props) => {
-  const { player, ctl, isLeft } = props;
+  const { player, decks, ctl, isLeft } = props;
   return (
     <div className="side">
       <Window
-        name="旋風BF"
+        decks={decks}
+        setDeck={ctl.setDeck}
         lp={player.lp}
         buf={player.buf}
         mode={player.mode}

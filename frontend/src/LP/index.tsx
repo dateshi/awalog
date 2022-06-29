@@ -9,8 +9,10 @@ import { useHistoryModal } from "./modal";
 const LP = () => {
   const { LPHistoryModal, showLPHistoryModal } = useHistoryModal();
   const { lpHistory, ctl: historyCtl } = useLPHistory();
-  const { player: p1, ctl: ctl1 } = usePlayer(1, historyCtl);
-  const { player: p2, ctl: ctl2 } = usePlayer(2, historyCtl);
+  // TODO: APIで取得したデッキ一覧にする
+  const decks = ["旋風BF", "墓地BF", "ヒーロービート", "代行天使"];
+  const { player: p1, ctl: ctl1 } = usePlayer(1, decks, historyCtl);
+  const { player: p2, ctl: ctl2 } = usePlayer(2, decks, historyCtl);
   return (
     <>
       <AWANav />
@@ -23,8 +25,8 @@ const LP = () => {
           player2Ctl={ctl2}
         />
         <div className="sides">
-          <Side player={p1} ctl={ctl1} isLeft={true}></Side>
-          <Side player={p2} ctl={ctl2} isLeft={false}></Side>
+          <Side decks={decks} player={p1} ctl={ctl1} isLeft={true}></Side>
+          <Side decks={decks} player={p2} ctl={ctl2} isLeft={false}></Side>
         </div>
       </Container>
       <LPHistoryModal lpHistory={lpHistory} />
