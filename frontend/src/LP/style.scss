@@ -4,6 +4,22 @@
 	flex-direction: row;
 	justify-content: space-between;
 }
+
+.modal-log {
+  display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.modal-player-name {
+  color: silver;
+}
+
+.modal-log-lp {
+  min-width: 160px;
+}
+
+
 .sides {
   display: flex;
 	flex-direction: row;

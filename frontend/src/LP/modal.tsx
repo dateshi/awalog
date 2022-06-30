@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
-import { LPHistory } from "./lp";
+import { LPHistory, Player } from "./lp";
 
 const toStringWithSign = (x: number) => {
   if (x > 0) {
@@ -10,16 +10,29 @@ const toStringWithSign = (x: number) => {
   }
 };
 
+type Props = {
+  lpHistory: LPHistory;
+  player1: Player;
+  player2: Player;
+};
+
 export const useHistoryModal = () => {
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
-  const LPHistoryModal = (props: { lpHistory: LPHistory }) => {
-    const { lpHistory } = props;
+  const LPHistoryModal = (props: Props) => {
+    const { lpHistory, player1, player2 } = props;
     const head = lpHistory.head;
     const logs = lpHistory.logs.map(({ playerID, from, to }, i) => {
       return (
         <ListGroup.Item variant={i === head ? "dark" : ""} key={i}>
-          {playerID} {from} → {to} ({toStringWithSign(to - from)})
+          <div className="modal-log">
+            <div className="modal-player-name">
+              {playerID === 1 ? player1.deck : player2.deck} ({playerID}P)
+            </div>
+            <div className="modal-log-lp">
+              {from} → {to} ({toStringWithSign(to - from)})
+            </div>
+          </div>
         </ListGroup.Item>
       );
     });

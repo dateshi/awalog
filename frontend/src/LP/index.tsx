@@ -29,7 +29,7 @@ const LP = () => {
           <Side decks={decks} player={p2} ctl={ctl2} isLeft={false}></Side>
         </div>
       </Container>
-      <LPHistoryModal lpHistory={lpHistory} />
+      <LPHistoryModal lpHistory={lpHistory} player1={p1} player2={p2} />
     </>
   );
 };
