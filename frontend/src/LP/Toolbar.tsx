@@ -1,21 +1,18 @@
-import { useState } from "react";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { LPHistory, LPHistoryCtl, PlayertCtl } from "./lp";
+import "./style.scss";
 
 const Coin = () => {
-  const [result, setResult] = useState<"表" | "裏" | "-">("-");
+  // const [result, setResult] = useState<"表" | "裏" | "-">("-");
   return (
-    <div>
-      <Button
-        variant="outline-secondary"
-        onClick={() => {
-          setResult(Math.random() < 0.5 ? "表" : "裏");
-        }}
-      >
-        コイン
-      </Button>
-      <div>{result}</div>
-    </div>
+    <Button
+      variant="outline-secondary"
+      // onClick={() => {
+      //   setResult(Math.random() < 0.5 ? "表" : "裏");
+      // }}
+    >
+      コイン
+    </Button>
   );
 };
 
@@ -72,20 +69,12 @@ const Toolbar = (props: Props) => {
     player2Ctl.redoLP(log);
   };
   return (
-    <Row>
-      <Col>
-        <Coin />
-      </Col>
-      <Col>
-        <Undo lpHistory={lpHistory} undo={undo} />
-      </Col>
-      <Col>
-        <Redo lpHistory={lpHistory} redo={redo} />
-      </Col>
-      <Col>
-        <LPLog showLPHistoryModal={showLPHistoryModal} />
-      </Col>
-    </Row>
+    <div className="toolbar">
+      <Coin />
+      <Undo lpHistory={lpHistory} undo={undo} />
+      <Redo lpHistory={lpHistory} redo={redo} />
+      <LPLog showLPHistoryModal={showLPHistoryModal} />
+    </div>
   );
 };
 
