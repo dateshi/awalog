@@ -24,8 +24,10 @@ export type Player = {
 
 export type PlayertCtl = ReturnType<typeof usePlayer>["ctl"];
 
+const initHistory = {logs: [], head: -1}
+
 export const useLPHistory = () => {
-  const [lpHistory, setHistory] = useState<LPHistory>({logs: [], head: -1});
+  const [lpHistory, setHistory] = useState<LPHistory>(initHistory);
   const addLog = (i: number, from: number, to: number) => {
     setHistory({
       logs: [
@@ -55,15 +57,20 @@ export const useLPHistory = () => {
     });
     return res;
   }
+  const reset = () => {
+    setHistory(initHistory);
+  }
   return {
     lpHistory: lpHistory,
     ctl: {
       addLog,
       undo,
       redo,
+      reset,
     }
   }
 }
+
 
 export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl) => {
   const [player, setPlayer] = useState<Player>({
@@ -91,14 +98,21 @@ export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl)
   };
   const undoLP = (log: LPLog) => {
     if (log.playerID === player.id) {
-      setPlayer({ ...player, lp: log.from })
+      setPlayer({ ...player, lp: log.from });
     }
-  }
+  };
   const redoLP = (log: LPLog) => {
     if (log.playerID === player.id) {
-      setPlayer({ ...player, lp: log.to })
+      setPlayer({ ...player, lp: log.to });
     }
-  }
+  };
+  const reset = () => {
+    setPlayer({...player,
+    lp: 8000,
+    mode: "normal" as Mode,
+    buf: 0,
+    });
+  };
   const changeMode = (mode: Mode) => {
     setPlayer({ ...player, buf: mode === "normal" ? 0 : player.buf, mode });
   };
@@ -127,6 +141,7 @@ export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl)
       halfLP,
       undoLP,
       redoLP,
+      reset,
       changeMode,
       pushKey,
     },

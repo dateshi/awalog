@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ListGroup, Modal } from "react-bootstrap";
+import { Button, ListGroup, Modal } from "react-bootstrap";
 import { LPHistory, Player } from "./lp";
 
 const toStringWithSign = (x: number) => {
@@ -65,4 +65,32 @@ export const useHistoryModal = () => {
   };
   const showLPHistoryModal = () => setShowModal(true);
   return { LPHistoryModal, showLPHistoryModal };
+};
+
+export const useResetModal = () => {
+  const [showModal, setShowModal] = useState(false);
+  const close = () => setShowModal(false);
+  const ResetModal = (props: { reset: () => void }) => (
+    <Modal show={showModal} onHide={close}>
+      <Modal.Header>リセット確認</Modal.Header>
+      <Modal.Body>
+        LPとログをリセットしてよいですか？ <br /> この操作は取り消しできません
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          onClick={() => {
+            props.reset();
+            setShowModal(false);
+          }}
+        >
+          はい
+        </Button>
+        <Button variant="secondary" onClick={close}>
+          いいえ
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+  const showResetModal = () => setShowModal(true);
+  return { ResetModal, showResetModal };
 };

@@ -2,6 +2,14 @@ import { Button } from "react-bootstrap";
 import { LPHistory, LPHistoryCtl, PlayertCtl } from "./lp";
 import "./style.scss";
 
+const Reset = (props: { onClick: () => void }) => {
+  return (
+    <Button variant="outline-secondary" onClick={props.onClick}>
+      リセット
+    </Button>
+  );
+};
+
 const Coin = () => {
   // const [result, setResult] = useState<"表" | "裏" | "-">("-");
   return (
@@ -43,6 +51,7 @@ const LPLog = (props: Pick<Props, "showLPHistoryModal">) => (
 );
 
 type Props = {
+  showResetModal: () => void;
   showLPHistoryModal: () => void;
   lpHistory: LPHistory;
   lpHistoryCtl: LPHistoryCtl;
@@ -52,6 +61,7 @@ type Props = {
 
 const Toolbar = (props: Props) => {
   const {
+    showResetModal,
     showLPHistoryModal,
     lpHistory,
     lpHistoryCtl,
@@ -70,6 +80,7 @@ const Toolbar = (props: Props) => {
   };
   return (
     <div className="toolbar">
+      <Reset onClick={showResetModal} />
       <Coin />
       <Undo lpHistory={lpHistory} undo={undo} />
       <Redo lpHistory={lpHistory} redo={redo} />
