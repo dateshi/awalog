@@ -94,3 +94,19 @@ export const useResetModal = () => {
   const showResetModal = () => setShowModal(true);
   return { ResetModal, showResetModal };
 };
+
+export const useCoinModal = () => {
+  const [showModal, setShowModal] = useState(false);
+  const close = () => setShowModal(false);
+  const CoinModal = () => {
+    const result = Math.random() > 0.5 ? "オモテ" : "ウラ";
+    return (
+      <Modal show={showModal} onHide={close}>
+        <Modal.Header>コイントス結果</Modal.Header>
+        <Modal.Body>{result}が出ました</Modal.Body>
+      </Modal>
+    );
+  };
+  const showCoinModal = () => setShowModal(true);
+  return { CoinModal, showCoinModal };
+};
