@@ -4,12 +4,18 @@ import "./style.scss";
 import Toolbar from "./Toolbar";
 import { useLPHistory, usePlayer } from "./lp";
 import Side from "./Side";
-import { useCoinModal, useHistoryModal, useResetModal } from "./modal";
+import {
+  useCoinModal,
+  useDiceModal,
+  useHistoryModal,
+  useResetModal,
+} from "./modal";
 
 const LP = () => {
   const { ResetModal, showResetModal } = useResetModal();
   const { LPHistoryModal, showLPHistoryModal } = useHistoryModal();
   const { CoinModal, showCoinModal } = useCoinModal();
+  const { DiceModal, showDiceModal } = useDiceModal();
   const { lpHistory, ctl: historyCtl } = useLPHistory();
   // TODO: APIで取得したデッキ一覧にする
   const decks = ["旋風BF", "墓地BF", "ヒーロービート", "代行天使"];
@@ -29,6 +35,7 @@ const LP = () => {
           showResetModal={showResetModal}
           showLPHistoryModal={showLPHistoryModal}
           showCoinModal={showCoinModal}
+          showDiceModal={showDiceModal}
           lpHistory={lpHistory}
           lpHistoryCtl={historyCtl}
           player1Ctl={ctl1}
@@ -42,6 +49,7 @@ const LP = () => {
       <LPHistoryModal lpHistory={lpHistory} player1={p1} player2={p2} />
       <ResetModal reset={reset} />
       <CoinModal />
+      <DiceModal />
     </>
   );
 };

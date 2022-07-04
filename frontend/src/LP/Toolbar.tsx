@@ -11,16 +11,17 @@ const Reset = (props: { onClick: () => void }) => {
 };
 
 const Coin = (props: { onClick: () => void }) => {
-  // const [result, setResult] = useState<"表" | "裏" | "-">("-");
   return (
-    <Button
-      variant="outline-secondary"
-      onClick={props.onClick}
-      // onClick={() => {
-      //   setResult(Math.random() < 0.5 ? "表" : "裏");
-      // }}
-    >
+    <Button variant="outline-secondary" onClick={props.onClick}>
       コイン
+    </Button>
+  );
+};
+
+const Dice = (props: { onClick: () => void }) => {
+  return (
+    <Button variant="outline-secondary" onClick={props.onClick}>
+      サイコロ
     </Button>
   );
 };
@@ -55,6 +56,7 @@ type Props = {
   showResetModal: () => void;
   showLPHistoryModal: () => void;
   showCoinModal: () => void;
+  showDiceModal: () => void;
   lpHistory: LPHistory;
   lpHistoryCtl: LPHistoryCtl;
   player1Ctl: PlayertCtl;
@@ -66,6 +68,7 @@ const Toolbar = (props: Props) => {
     showResetModal,
     showLPHistoryModal,
     showCoinModal,
+    showDiceModal,
     lpHistory,
     lpHistoryCtl,
     player1Ctl,
@@ -85,6 +88,7 @@ const Toolbar = (props: Props) => {
     <div className="toolbar">
       <Reset onClick={showResetModal} />
       <Coin onClick={showCoinModal} />
+      <Dice onClick={showDiceModal} />
       <Undo lpHistory={lpHistory} undo={undo} />
       <Redo lpHistory={lpHistory} redo={redo} />
       <LPLog showLPHistoryModal={showLPHistoryModal} />
