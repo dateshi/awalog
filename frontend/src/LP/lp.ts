@@ -72,7 +72,7 @@ export const useLPHistory = () => {
 }
 
 
-export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl) => {
+export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl, showSaveModal: () => void) => {
   const [player, setPlayer] = useState<Player>({
     id,
     deck: decks[0],
@@ -80,6 +80,12 @@ export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl)
     mode: "normal" as Mode,
     buf: 0,
   });
+  const enhancedSetPlayer = (p: Player) => {
+    setPlayer(p);
+    if (p.lp <= 0) {
+      showSaveModal();
+    }
+  };
 
   const setDeck = (deck: string) => {
     setPlayer({...player, deck})
@@ -87,13 +93,13 @@ export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl)
   const addLP = (lp: number) => {
     const from = player.lp;
     const to = Math.max(0, player.lp + lp)
-    setPlayer({ ...player, lp: to });
+    enhancedSetPlayer({ ...player, lp: to });
     historyCtl.addLog(id, from, to );
   };
   const halfLP = () => {
     const from = player.lp;
     const to = Math.ceil(player.lp / 2);
-    setPlayer({ ...player, lp: to });
+    enhancedSetPlayer({ ...player, lp: to });
     historyCtl.addLog(id, from, to );
   };
   const undoLP = (log: LPLog) => {
@@ -121,7 +127,7 @@ export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl)
       const sign = player.mode === "+" ? 1 : -1;
       const from = player.lp;
       const to = Math.max(0, player.lp + sign * player.buf);
-      setPlayer({
+      enhancedSetPlayer({
         ...player,
         lp: to,
         mode: "normal",

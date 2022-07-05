@@ -80,7 +80,7 @@ export const useResetModal = () => {
         <Button
           onClick={() => {
             props.reset();
-            setShowModal(false);
+            close();
           }}
         >
           はい
@@ -125,4 +125,36 @@ export const useDiceModal = () => {
   };
   const showDiceModal = () => setShowModal(true);
   return { DiceModal, showDiceModal };
+};
+
+const save = (p1: Player, p2: Player) => {
+  // TODO: APIで結果を保存
+  console.log(p1);
+  console.log(p2);
+};
+
+export const useSaveModal = () => {
+  const [showModal, setShowModal] = useState(false);
+  const close = () => setShowModal(false);
+  const SaveModal = (props: { p1: Player; p2: Player }) => (
+    <Modal show={showModal} onHide={close}>
+      <Modal.Header>保存確認</Modal.Header>
+      <Modal.Body>デュエルの結果を保存してよいですか？</Modal.Body>
+      <Modal.Footer>
+        <Button
+          onClick={() => {
+            save(props.p1, props.p2);
+            close();
+          }}
+        >
+          はい
+        </Button>
+        <Button variant="secondary" onClick={close}>
+          いいえ
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+  const showSaveModal = () => setShowModal(true);
+  return { SaveModal, showSaveModal };
 };

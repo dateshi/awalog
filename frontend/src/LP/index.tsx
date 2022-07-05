@@ -9,9 +9,11 @@ import {
   useDiceModal,
   useHistoryModal,
   useResetModal,
+  useSaveModal,
 } from "./modal";
 
 const LP = () => {
+  const { SaveModal, showSaveModal } = useSaveModal();
   const { ResetModal, showResetModal } = useResetModal();
   const { LPHistoryModal, showLPHistoryModal } = useHistoryModal();
   const { CoinModal, showCoinModal } = useCoinModal();
@@ -19,8 +21,18 @@ const LP = () => {
   const { lpHistory, ctl: historyCtl } = useLPHistory();
   // TODO: APIで取得したデッキ一覧にする
   const decks = ["旋風BF", "墓地BF", "ヒーロービート", "代行天使"];
-  const { player: p1, ctl: ctl1 } = usePlayer(1, decks, historyCtl);
-  const { player: p2, ctl: ctl2 } = usePlayer(2, decks, historyCtl);
+  const { player: p1, ctl: ctl1 } = usePlayer(
+    1,
+    decks,
+    historyCtl,
+    showSaveModal
+  );
+  const { player: p2, ctl: ctl2 } = usePlayer(
+    2,
+    decks,
+    historyCtl,
+    showSaveModal
+  );
   const reset = () => {
     historyCtl.reset();
     ctl1.reset();
@@ -46,6 +58,7 @@ const LP = () => {
           <Side decks={decks} player={p2} ctl={ctl2} isLeft={false}></Side>
         </div>
       </Container>
+      <SaveModal p1={p1} p2={p2} />
       <LPHistoryModal lpHistory={lpHistory} player1={p1} player2={p2} />
       <ResetModal reset={reset} />
       <CoinModal />
