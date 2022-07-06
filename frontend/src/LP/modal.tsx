@@ -10,7 +10,7 @@ const toStringWithSign = (x: number) => {
   }
 };
 
-type Props = {
+type HistoryProps = {
   lpHistory: LPHistory;
   player1: Player;
   player2: Player;
@@ -19,7 +19,7 @@ type Props = {
 export const useHistoryModal = () => {
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
-  const LPHistoryModal = (props: Props) => {
+  const LPHistoryModal = (props: HistoryProps) => {
     const { lpHistory, player1, player2 } = props;
     const head = lpHistory.head;
     const logs = lpHistory.logs.map(({ playerID, from, to }, i) => {
@@ -67,10 +67,14 @@ export const useHistoryModal = () => {
   return { LPHistoryModal, showLPHistoryModal };
 };
 
+type ResetProps = {
+  reset: () => void;
+};
+
 export const useResetModal = () => {
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
-  const ResetModal = (props: { reset: () => void }) => (
+  const ResetModal = (props: ResetProps) => (
     <Modal show={showModal} onHide={close}>
       <Modal.Header>リセット確認</Modal.Header>
       <Modal.Body>
@@ -133,10 +137,15 @@ const save = (p1: Player, p2: Player) => {
   console.log(p2);
 };
 
+type SaveProps = {
+  p1: Player;
+  p2: Player;
+};
+
 export const useSaveModal = () => {
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
-  const SaveModal = (props: { p1: Player; p2: Player }) => (
+  const SaveModal = (props: SaveProps) => (
     <Modal show={showModal} onHide={close}>
       <Modal.Header>保存確認</Modal.Header>
       <Modal.Body>デュエルの結果を保存してよいですか？</Modal.Body>
