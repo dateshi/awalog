@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplify1e4dd2f9515f4-staging-92826-authRole",
+      "UnauthRoleArn": "arn:aws:iam::944202896336:role/amplify-amplify1e4dd2f9515f4-staging-92826-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::944202896336:role/amplify-amplify1e4dd2f9515f4-staging-92826-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-amplify1e4dd2f9515f4-staging-92826-deployment",
+      "UnauthRoleName": "amplify-amplify1e4dd2f9515f4-staging-92826-unauthRole",
+      "StackName": "amplify-amplify1e4dd2f9515f4-staging-92826",
+      "StackId": "arn:aws:cloudformation:us-west-2:944202896336:stack/amplify-amplify1e4dd2f9515f4-staging-92826/7e69fa40-fab2-11ec-b69a-06c70a2761fd",
+      "AmplifyAppId": "d2nn648c7bg1q4"
+    },
+    "categories": {
+      "auth": {
+        "awalog": {}
+      }
+    }
+  }
+}
