@@ -1,5 +1,6 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Mode } from "./lp";
+import "./style.scss";
 
 const quickButtons = [
   [-50, -100, -200],
@@ -23,143 +24,127 @@ type Props = {
   pushKey: (key: string) => void;
 };
 
-const Controller = (props: Props) => {
-  if (props.mode === "normal") {
-    return (
-      <Container>
-        {quickButtons.map((row, i) => {
-          return (
-            <Row style={{ padding: 15 }} key={i}>
-              {row.map((val, j) => {
-                return (
-                  <Col key={j}>
-                    <Button
-                      variant="outline-secondary"
-                      style={{
-                        width: "100px",
-                        height: "60px",
-                      }}
-                      onClick={() => props.addLP(val)}
-                    >
-                      {val}
-                    </Button>
-                  </Col>
-                );
-              })}
-            </Row>
-          );
-        })}
-        <Row style={{ padding: 15 }}>
-          <Col>
-            <Button
-              variant="outline-secondary"
-              style={{
-                width: "100px",
-                height: "60px",
-              }}
-              onClick={() => props.changeMode("+")}
-            >
-              +
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              variant="outline-secondary"
-              style={{
-                width: "100px",
-                height: "60px",
-              }}
-              onClick={() => props.changeMode("-")}
-            >
-              -
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              variant="outline-secondary"
-              style={{
-                width: "100px",
-                height: "60px",
-              }}
-              onClick={props.halfLP}
-            >
-              1/2
-            </Button>
-          </Col>
+const Normal = (props: Props) => (
+  <Container>
+    {quickButtons.map((row, i) => {
+      return (
+        <Row className="button-row" key={i}>
+          {row.map((val, j) => {
+            return (
+              <Col key={j}>
+                <Button
+                  variant="outline-secondary"
+                  className="button"
+                  size="lg"
+                  onClick={() => props.addLP(val)}
+                >
+                  {val}
+                </Button>
+              </Col>
+            );
+          })}
         </Row>
-      </Container>
-    );
-  }
-  return (
-    <Container>
-      {manualButtons.map((row, i) => {
-        return (
-          <Row style={{ padding: 15 }} key={i}>
-            {row.map((val, j) => {
-              return (
-                <Col key={j}>
-                  <Button
-                    variant="outline-secondary"
-                    style={{
-                      width: "100px",
-                      height: "60px",
-                    }}
-                    onClick={() => props.pushKey(val)}
-                  >
-                    {val}
-                  </Button>
-                </Col>
-              );
-            })}
-          </Row>
-        );
-      })}
-      <Row style={{ padding: 15 }}>
-        <Col>
-          <Button
-            variant={
-              props.mode === ("+" as Mode) ? "secondary" : "outline-secondary"
-            }
-            style={{
-              width: "100px",
-              height: "60px",
-            }}
-            onClick={() => props.changeMode("+")}
-          >
-            +
-          </Button>
-        </Col>
-        <Col>
-          <Button
-            variant={
-              props.mode === ("-" as Mode) ? "secondary" : "outline-secondary"
-            }
-            style={{
-              width: "100px",
-              height: "60px",
-            }}
-            onClick={() => props.changeMode("-")}
-          >
-            -
-          </Button>
-        </Col>
-        <Col>
-          <Button
-            variant="outline-secondary"
-            style={{
-              width: "100px",
-              height: "60px",
-            }}
-            onClick={() => {
-              props.changeMode("normal");
-            }}
-          >
-            C
-          </Button>
-        </Col>
-      </Row>
-    </Container>
-  );
-};
+      );
+    })}
+    <Row className="button-row">
+      <Col>
+        <Button
+          variant="outline-secondary"
+          className="button"
+          size="lg"
+          onClick={() => props.changeMode("+")}
+        >
+          +
+        </Button>
+      </Col>
+      <Col>
+        <Button
+          variant="outline-secondary"
+          className="button"
+          size="lg"
+          onClick={() => props.changeMode("-")}
+        >
+          -
+        </Button>
+      </Col>
+      <Col>
+        <Button
+          variant="outline-secondary"
+          className="button"
+          size="lg"
+          onClick={props.halfLP}
+        >
+          1/2
+        </Button>
+      </Col>
+    </Row>
+  </Container>
+);
+
+const Manual = (props: Props) => (
+  <Container>
+    {manualButtons.map((row, i) => {
+      return (
+        <Row className="button-row" key={i}>
+          {row.map((val, j) => {
+            return (
+              <Col key={j}>
+                <Button
+                  variant="outline-secondary"
+                  className="button"
+                  size="lg"
+                  onClick={() => props.pushKey(val)}
+                >
+                  {val}
+                </Button>
+              </Col>
+            );
+          })}
+        </Row>
+      );
+    })}
+    <Row className="button-row">
+      <Col>
+        <Button
+          variant={
+            props.mode === ("+" as Mode) ? "secondary" : "outline-secondary"
+          }
+          className="button"
+          size="lg"
+          onClick={() => props.changeMode("+")}
+        >
+          +
+        </Button>
+      </Col>
+      <Col>
+        <Button
+          variant={
+            props.mode === ("-" as Mode) ? "secondary" : "outline-secondary"
+          }
+          className="button"
+          size="lg"
+          onClick={() => props.changeMode("-")}
+        >
+          -
+        </Button>
+      </Col>
+      <Col>
+        <Button
+          variant="outline-secondary"
+          className="button"
+          size="lg"
+          onClick={() => {
+            props.changeMode("normal");
+          }}
+        >
+          C
+        </Button>
+      </Col>
+    </Row>
+  </Container>
+);
+
+const Controller = (props: Props) =>
+  props.mode === "normal" ? <Normal {...props} /> : <Manual {...props} />;
 
 export default Controller;
