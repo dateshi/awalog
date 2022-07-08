@@ -1,0 +1,118 @@
+import { usePlayer } from "./lp";
+import { renderHook, act } from '@testing-library/react-hooks';
+
+describe('usePlayer', () => {
+  const decks = ['旋風BF', '代行天使'];
+  const historyCtl = {
+    addLog: jest.fn(),
+    undo: jest.fn(),
+    redo: jest.fn(),
+    reset: jest.fn()
+  };
+  const showSaveModal = jest.fn();
+
+  it('初期状態', () => {
+    const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+    expect(result.current.player).toEqual({
+      id: 0,
+      lp: 8000,
+      deck: decks[0],
+      mode: 'normal',
+      buf: 0
+    })
+  });
+
+  describe('setDeck', () => {
+    it('異なるデッキに変更', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.deck).toEqual("旋風BF");
+      act(() => {
+        result.current.ctl.setDeck("代行天使");
+      })
+      expect(result.current.player.deck).toEqual("代行天使");
+    });
+    it('同じデッキに変更', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.deck).toEqual("旋風BF");
+      act(() => {
+        result.current.ctl.setDeck("旋風BF");
+      })
+      expect(result.current.player.deck).toEqual("旋風BF");
+    });
+  });
+
+  describe('addLP', () => {
+    it('LP減算', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.addLP(-1000);
+      })
+      expect(result.current.player.lp).toEqual(7000);
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 7000])
+    });
+    it('巨大なダメージを受けても0で留まる', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-100000);
+      })
+      expect(result.current.player.lp).toEqual(0);
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 0])
+    });
+    it('LPが0になるとSaveModalを表示', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-8000);
+      })
+      expect(result.current.player.lp).toEqual(0);
+      expect(showSaveModal.call.length).toEqual(1);
+    });
+    it('LP加算', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.addLP(1000);
+      })
+      expect(result.current.player.lp).toEqual(9000);
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 9000])
+    });
+    it('大きな値も加算可能', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.addLP(100000);
+      })
+      expect(result.current.player.lp).toEqual(108000);
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 108000])
+    });
+    it('+0', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.addLP(0);
+      })
+      expect(result.current.player.lp).toEqual(8000);
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 8000])
+    });
+    it('複数回LP変動させる', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.addLP(-2000);
+      })
+      expect(result.current.player.lp).toEqual(6000);
+      act(() => {
+        result.current.ctl.addLP(1000);
+      })
+      expect(result.current.player.lp).toEqual(7000);
+      act(() => {
+        result.current.ctl.addLP(-3000);
+      })
+      expect(result.current.player.lp).toEqual(4000);
+      expect(historyCtl.addLog.mock.calls.length).toEqual(3)
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 6000])
+      expect(historyCtl.addLog.mock.calls[1]).toEqual([0, 6000, 7000])
+      expect(historyCtl.addLog.mock.calls[2]).toEqual([0, 7000, 4000])
+    });
+  });
+});
