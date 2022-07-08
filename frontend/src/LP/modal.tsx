@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, ListGroup, Modal } from "react-bootstrap";
-import { LPHistory, Player } from "./lp";
+import { LPHistory, Player } from "./helper";
 
 const toStringWithSign = (x: number) => {
   if (x > 0) {
@@ -131,18 +131,12 @@ export const useDiceModal = () => {
   return { DiceModal, showDiceModal };
 };
 
-const save = (p1: Player, p2: Player) => {
-  // TODO: APIで結果を保存
-  console.log(p1);
-  console.log(p2);
-};
-
 type SaveProps = {
   p1: Player;
   p2: Player;
 };
 
-export const useSaveModal = () => {
+export const useSaveModal = (save: (p1: Player, p2: Player) => void) => {
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
   const SaveModal = (props: SaveProps) => (
