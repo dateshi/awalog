@@ -179,8 +179,10 @@ describe('usePlayer', () => {
       const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
       act(() => {
         result.current.ctl.addLP(-3000);
-        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
       });
+      act(() => {
+        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
+      })
       expect(result.current.player.lp).toEqual(8000);
       act(() => {
         result.current.ctl.redoLP({playerID: 0, from: 8000, to: 5000});
@@ -191,13 +193,63 @@ describe('usePlayer', () => {
       const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
       act(() => {
         result.current.ctl.addLP(-3000);
-        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
       });
+      act(() => {
+        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
+      })
       expect(result.current.player.lp).toEqual(8000);
       act(() => {
         result.current.ctl.redoLP({playerID: 1, from: 8000, to: 5000});
       });
       expect(result.current.player.lp).toEqual(8000);
+    });
+  });
+
+  describe('reset', () => {
+    it('resetしてもデッキは変わらない', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.setDeck("代行天使");
+      });
+      act(() => {
+        result.current.ctl.addLP(-3000);
+      });
+      act(() => {
+        result.current.ctl.changeMode("+");
+      });
+      act(() => {
+        result.current.ctl.pushKey("9");
+      });
+      expect(result.current.player).toEqual({
+        id: 0,
+        lp: 5000,
+        deck: '代行天使',
+        mode: '+',
+        buf: 9
+      });
+      act(() => {
+        result.current.ctl.reset();
+      });
+      expect(result.current.player).toEqual({
+        id: 0,
+        lp: 8000,
+        deck: '代行天使',
+        mode: 'normal',
+        buf: 0
+      });
+    });
+    it('初期状態のままreset', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.reset();
+      });
+      expect(result.current.player).toEqual({
+        id: 0,
+        lp: 8000,
+        deck: decks[0],
+        mode: 'normal',
+        buf: 0
+      });
     });
   });
 });
