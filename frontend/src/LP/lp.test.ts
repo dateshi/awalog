@@ -115,4 +115,89 @@ describe('usePlayer', () => {
       expect(historyCtl.addLog.mock.calls[2]).toEqual([0, 7000, 4000])
     });
   });
+
+  describe('halfLP', () => {
+    it('LP半分', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.halfLP();
+      });
+      expect(result.current.player.lp).toEqual(4000);
+    });
+    it('LPが奇数の場合、半減後のLPは切り上げ', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-1);
+      });
+      expect(result.current.player.lp).toEqual(7999);
+      act(() => {
+        result.current.ctl.halfLP();
+      });
+      expect(result.current.player.lp).toEqual(4000);
+    });
+    it('LPが1の場合、半減後のLPも1', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-7999);
+      });
+      expect(result.current.player.lp).toEqual(1);
+      act(() => {
+        result.current.ctl.halfLP();
+      });
+      expect(result.current.player.lp).toEqual(1);
+    });
+  });
+
+  describe('undoLP', () => {
+    it('LP減算後のundo', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-3000);
+      });
+      expect(result.current.player.lp).toEqual(5000);
+      act(() => {
+        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
+      });
+      expect(result.current.player.lp).toEqual(8000);
+    });
+    it('プレイヤーidが異なる場合はundoされない', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-3000);
+      });
+      expect(result.current.player.lp).toEqual(5000);
+      act(() => {
+        result.current.ctl.undoLP({playerID: 1, from: 8000, to: 5000});
+      });
+      expect(result.current.player.lp).toEqual(5000);
+    });
+  });
+
+  describe('redoLP', () => {
+    it('undo後のredo', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-3000);
+        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
+      });
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.redoLP({playerID: 0, from: 8000, to: 5000});
+      });
+      expect(result.current.player.lp).toEqual(5000);
+    });
+    it('プレイヤーidが異なる場合はredoされない', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.addLP(-3000);
+        result.current.ctl.undoLP({playerID: 0, from: 8000, to: 5000});
+      });
+      expect(result.current.player.lp).toEqual(8000);
+      act(() => {
+        result.current.ctl.redoLP({playerID: 1, from: 8000, to: 5000});
+      });
+      expect(result.current.player.lp).toEqual(8000);
+    });
+  });
 });
