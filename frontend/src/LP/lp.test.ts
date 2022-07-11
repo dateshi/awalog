@@ -252,4 +252,89 @@ describe('usePlayer', () => {
       });
     });
   });
+
+  describe('changeMode', () => {
+    it('normalから+に遷移', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      expect(result.current.player.mode).toEqual('+');
+    });
+    it('normalから-に遷移', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('-');
+      });
+      expect(result.current.player.mode).toEqual('-');
+    });
+    it('+から-に遷移（バッファの値は引き継がれる）', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      act(() => {
+        result.current.ctl.pushKey('00');
+      });
+      act(() => {
+        result.current.ctl.changeMode('-');
+      });
+      expect(result.current.player.mode).toEqual('-');
+      expect(result.current.player.buf).toEqual(200);
+    });
+    it('-から+に遷移（バッファの値は引き継がれる）', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('-');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      act(() => {
+        result.current.ctl.pushKey('00');
+      });
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      expect(result.current.player.mode).toEqual('+');
+      expect(result.current.player.buf).toEqual(200);
+    });
+    it('+からnormalに遷移（バッファの値はクリアされる）', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      act(() => {
+        result.current.ctl.pushKey('00');
+      });
+      act(() => {
+        result.current.ctl.changeMode('normal');
+      });
+      expect(result.current.player.mode).toEqual('normal');
+      expect(result.current.player.buf).toEqual(0);
+    });
+    it('-からnormalに遷移（バッファの値はクリアされる）', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('-');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      act(() => {
+        result.current.ctl.pushKey('00');
+      });
+      act(() => {
+        result.current.ctl.changeMode('normal');
+      });
+      expect(result.current.player.mode).toEqual('normal');
+      expect(result.current.player.buf).toEqual(0);
+    });
+  });
 });
