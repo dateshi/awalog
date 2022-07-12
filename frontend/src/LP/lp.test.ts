@@ -337,4 +337,140 @@ describe('usePlayer', () => {
       expect(result.current.player.buf).toEqual(0);
     });
   });
+
+  describe('pushKey', () => {
+    it('buf=0で0以外の整数をpushするとbufはその整数になる', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      expect(result.current.player.buf).toEqual(0);
+      act(() => {
+        result.current.ctl.pushKey('1')
+      });
+      expect(result.current.player.buf).toEqual(1);
+    });
+    it('buf=0で0をpushするとbufは0のまま', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      expect(result.current.player.buf).toEqual(0);
+      act(() => {
+        result.current.ctl.pushKey('0')
+      });
+      expect(result.current.player.buf).toEqual(0);
+    });
+    it('buf=0で00をpushするとbufは0のまま', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      expect(result.current.player.buf).toEqual(0);
+      act(() => {
+        result.current.ctl.pushKey('00')
+      });
+      expect(result.current.player.buf).toEqual(0);
+    });
+    it('buf!=0で整数をpushするとbufの末尾にそれが追加される', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      act(() => {
+        result.current.ctl.pushKey('4');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      expect(result.current.player.buf).toEqual(42);
+      act(() => {
+        result.current.ctl.pushKey('0')
+      });
+      expect(result.current.player.buf).toEqual(420);
+    });
+    it('buf!=0で00をpushするとbufが100倍される', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      act(() => {
+        result.current.ctl.pushKey('4');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      expect(result.current.player.buf).toEqual(42);
+      act(() => {
+        result.current.ctl.pushKey('00')
+      });
+      expect(result.current.player.buf).toEqual(4200);
+    });
+    it('+モードの状態で=をpushするとbufがLPに加算されnormalモードに戻る', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('+');
+      });
+      act(() => {
+        result.current.ctl.pushKey('4');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      expect(result.current.player.lp).toEqual(8000);
+      expect(result.current.player.buf).toEqual(42);
+      act(() => {
+        result.current.ctl.pushKey('=')
+      });
+      expect(result.current.player.lp).toEqual(8042);
+      expect(result.current.player.buf).toEqual(0);
+      expect(result.current.player.mode).toEqual('normal');
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 8042])
+    });
+    it('-モードの状態で=をpushするとbufがLPに減算されnormalモードに戻る', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('-');
+      });
+      act(() => {
+        result.current.ctl.pushKey('4');
+      });
+      act(() => {
+        result.current.ctl.pushKey('2');
+      });
+      expect(result.current.player.lp).toEqual(8000);
+      expect(result.current.player.buf).toEqual(42);
+      act(() => {
+        result.current.ctl.pushKey('=')
+      });
+      expect(result.current.player.lp).toEqual(7958);
+      expect(result.current.player.buf).toEqual(0);
+      expect(result.current.player.mode).toEqual('normal');
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 7958])
+    });
+    it('-モードの状態で=をpushした場合もLPは0未満にならない', () => {
+      const { result } = renderHook(() => usePlayer(0, decks, historyCtl, showSaveModal));
+      act(() => {
+        result.current.ctl.changeMode('-');
+      });
+      act(() => {
+        result.current.ctl.pushKey('9');
+      });
+      act(() => {
+        result.current.ctl.pushKey('00');
+      });
+      act(() => {
+        result.current.ctl.pushKey('8');
+      });
+      expect(result.current.player.lp).toEqual(8000);
+      expect(result.current.player.buf).toEqual(9008);
+      act(() => {
+        result.current.ctl.pushKey('=')
+      });
+      expect(result.current.player.lp).toEqual(0);
+      expect(result.current.player.buf).toEqual(0);
+      expect(result.current.player.mode).toEqual('normal');
+      expect(historyCtl.addLog.mock.calls[0]).toEqual([0, 8000, 0])
+    });
+  });
 });
