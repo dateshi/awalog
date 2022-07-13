@@ -1,5 +1,58 @@
-import { usePlayer } from "./lp";
+import { useLPHistory, usePlayer } from "./lp";
 import { renderHook, act } from '@testing-library/react-hooks';
+
+describe('useLPHistory', () => {
+
+  it('初期状態', () => {
+    const { result } = renderHook(() => useLPHistory());
+    expect(result.current.lpHistory.logs.length).toEqual(0);
+    expect(result.current.lpHistory.head).toEqual(-1);
+  });
+
+  describe('addLog', () => {
+    it('履歴が空の状態でログ追加', () => {
+      const { result } = renderHook(() => useLPHistory());
+      act(() => {
+        result.current.ctl.addLog(0, 8000, 7000)
+      });
+      expect(result.current.lpHistory.logs.length).toEqual(1);
+      expect(result.current.lpHistory.logs[0]).toEqual({playerID: 0, from: 8000, to: 7000});
+      expect(result.current.lpHistory.head).toEqual(0);
+    });
+    it('異なるプレイヤーに対するログ追加', () => {
+      const { result } = renderHook(() => useLPHistory());
+      act(() => {
+        result.current.ctl.addLog(0, 8000, 7000)
+      });
+      act(() => {
+        result.current.ctl.addLog(1, 8000, 9000)
+      });
+      expect(result.current.lpHistory.logs.length).toEqual(2);
+      expect(result.current.lpHistory.logs[1]).toEqual({playerID: 1, from: 8000, to: 9000});
+      expect(result.current.lpHistory.head).toEqual(1);
+    });
+    it('headが先頭でない状態でログ追加すると上書きされる', () => {
+      const { result } = renderHook(() => useLPHistory());
+      act(() => {
+        result.current.ctl.addLog(0, 8000, 7000)
+      });
+      act(() => {
+        result.current.ctl.addLog(1, 8000, 9000)
+      });
+      act(() => {
+        result.current.ctl.undo();
+      });
+      expect(result.current.lpHistory.logs.length).toEqual(2);
+      expect(result.current.lpHistory.head).toEqual(0);
+      act(() => {
+        result.current.ctl.addLog(1, 8000, 10000)
+      });
+      expect(result.current.lpHistory.logs.length).toEqual(2);
+      expect(result.current.lpHistory.logs[1]).toEqual({playerID: 1, from: 8000, to: 10000});
+      expect(result.current.lpHistory.head).toEqual(1);
+    });
+  });
+})
 
 describe('usePlayer', () => {
   const decks = ['旋風BF', '代行天使'];
