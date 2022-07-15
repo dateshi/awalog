@@ -1,4 +1,4 @@
-import { useLPHistory, usePlayer } from "./lp";
+import { useLPHistory, usePlayer } from "./helper";
 import { renderHook, act } from '@testing-library/react-hooks';
 
 describe('useLPHistory', () => {

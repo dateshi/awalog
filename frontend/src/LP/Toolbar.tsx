@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { LPHistory, LPHistoryCtl, PlayertCtl } from "./lp";
+import { LPHistory, LPHistoryCtl, PlayertCtl } from "./helper";
 import "./style.scss";
 
 const Reset = (props: { onClick: () => void }) => {

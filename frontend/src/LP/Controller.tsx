@@ -1,5 +1,5 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { Mode } from "./lp";
+import { Mode } from "./helper";
 import "./style.scss";
 
 const quickButtons = [

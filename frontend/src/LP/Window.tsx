@@ -1,5 +1,5 @@
 import { Form, ProgressBar } from "react-bootstrap";
-import { Mode } from "./lp";
+import { Mode } from "./helper";
 
 type Props = {
   decks: string[];
@@ -37,7 +37,9 @@ const Window = (props: Props) => {
           ))}
         </Form.Select>
         <ProgressBar variant={variant} now={now}></ProgressBar>
-        <div className="lp">{`${lp}${sign}${buf !== 0 ? buf : ""}`}</div>
+        <div className="lp" data-testid="lp">{`${lp}${sign}${
+          buf !== 0 ? buf : ""
+        }`}</div>
       </div>
     </div>
   );

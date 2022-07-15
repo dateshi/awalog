@@ -1,5 +1,5 @@
 import Controller from "./Controller";
-import { Player, PlayertCtl } from "./lp";
+import { Player, PlayertCtl } from "./helper";
 import Window from "./Window";
 
 type Props = {
