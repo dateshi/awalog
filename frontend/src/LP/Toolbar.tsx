@@ -31,6 +31,7 @@ const Undo = (props: { lpHistory: LPHistory; undo: () => void }) => (
     variant="outline-secondary"
     onClick={props.undo}
     disabled={props.lpHistory.head < 0}
+    data-testid="undo"
   >
     戻る
   </Button>
@@ -41,6 +42,7 @@ const Redo = (props: { lpHistory: LPHistory; redo: () => void }) => (
     variant="outline-secondary"
     onClick={props.redo}
     disabled={props.lpHistory.head === props.lpHistory.logs.length - 1}
+    data-testid="redo"
   >
     進む
   </Button>
