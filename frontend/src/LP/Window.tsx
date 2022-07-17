@@ -23,6 +23,7 @@ const Window = (props: Props) => {
     }
   })();
   const sign = buf === 0 || mode === "normal" ? "" : mode;
+  const testID = isLeft ? "1p" : "2p";
   return (
     <div className={isLeft ? "lp-box-left" : "lp-box-right"}>
       <div className="lp-parent bg-light text-black">
@@ -31,13 +32,14 @@ const Window = (props: Props) => {
           color="bg-light"
           className="deck-selector"
           onChange={(e) => setDeck(e.target.value)}
+          data-testid={`window-deck-${testID}`}
         >
           {decks.map((deck) => (
             <option key={deck}>{deck}</option>
           ))}
         </Form.Select>
         <ProgressBar variant={variant} now={now}></ProgressBar>
-        <div className="lp" data-testid="lp">{`${lp}${sign}${
+        <div className="lp" data-testid={`window-lp-${testID}`}>{`${lp}${sign}${
           buf !== 0 ? buf : ""
         }`}</div>
       </div>
