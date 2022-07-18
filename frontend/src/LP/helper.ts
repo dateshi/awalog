@@ -95,6 +95,7 @@ export const usePlayer = (id: number, decks: string[], historyCtl: LPHistoryCtl,
     const to = Math.max(0, player.lp + lp)
     enhancedSetPlayer({ ...player, lp: to });
     historyCtl.addLog(id, from, to );
+    console.log(lp)
   };
   const halfLP = () => {
     const from = player.lp;
