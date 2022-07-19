@@ -68,7 +68,7 @@ describe("LP/Body", () => {
         await user.click(screen.getByText("="));
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("9234");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
-        expect(screen.queryByText("7")).toBeNull();
+        expect(screen.queryByText("7")).not.toBeInTheDocument();
         expect(screen.getAllByText("-50").length).toEqual(2);
       });
       it("2PのLPを加算する", async () => {
@@ -120,7 +120,7 @@ describe("LP/Body", () => {
         await user.click(screen.getByText("="));
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("6766");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
-        expect(screen.queryByText("7")).toBeNull();
+        expect(screen.queryByText("7")).not.toBeInTheDocument();
         expect(screen.getAllByText("-50").length).toEqual(2);
       });
       it("2PのLPを減算する", async () => {
@@ -155,10 +155,10 @@ describe("LP/Body", () => {
       it("加算モードに遷移した直後にキャンセル", async () => {
         render(<Body decks={decks} save={save} />);
         await user.click(screen.getAllByText("+")[0]);
-        expect(screen.getByText("7")).toBeTruthy();
+        expect(screen.getByText("7")).toBeInTheDocument();
         expect(screen.getAllByText("-50").length).toEqual(1);
         await user.click(screen.getByText("C"));
-        expect(screen.queryByText("7")).toBeNull();
+        expect(screen.queryByText("7")).not.toBeInTheDocument();
         expect(screen.getAllByText("-50").length).toEqual(2);
       });
       it("減算モードでLP入力中にキャンセル", async () => {
@@ -169,11 +169,11 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual(
           "8000-1"
         );
-        expect(screen.getByText("7")).toBeTruthy();
+        expect(screen.getByText("7")).toBeInTheDocument();
         expect(screen.getAllByText("-50").length).toEqual(1);
         await user.click(screen.getByText("C"));
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
-        expect(screen.queryByText("7")).toBeNull();
+        expect(screen.queryByText("7")).not.toBeInTheDocument();
         expect(screen.getAllByText("-50").length).toEqual(2);
       });
       it("1Pが加算モード、2Pが減算モードの状態で2P側をキャンセル", async () => {
@@ -188,15 +188,15 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual(
           "8000-2"
         );
-        expect(screen.queryByText("-50")).toBeNull();
+        expect(screen.queryByText("-50")).not.toBeInTheDocument();
         expect(screen.getAllByText("7").length).toEqual(2);
         await user.click(screen.getAllByText("C")[1]);
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual(
           "8000+1"
         );
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
-        expect(screen.getByText("7")).toBeTruthy();
-        expect(screen.getByText("-50")).toBeTruthy();
+        expect(screen.getByText("7")).toBeInTheDocument();
+        expect(screen.getByText("-50")).toBeInTheDocument();
       });
       it("加算モードでLP入力中にキャンセルし加算モードに戻ると入力したLPはクリアされる", async () => {
         render(<Body decks={decks} save={save} />);
