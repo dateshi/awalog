@@ -4,19 +4,20 @@ import userEvent from "@testing-library/user-event";
 import Body from "./Body";
 
 describe("LP/Body", () => {
-  const decks = ["旋風BF", "代行天使"];
-  const save = jest.fn();
   const user = userEvent.setup();
 
   describe("初期状態", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
     it("初期状態ではundo/redoボタンは非活性化状態である", () => {
-      render(<Body decks={decks} save={save} />);
+      render(DefaultBody);
 
       expect(screen.getByTestId("undo") as HTMLButtonElement).toBeDisabled();
       expect(screen.getByTestId("redo") as HTMLButtonElement).toBeDisabled();
     });
     it("初期状態の選択中デッキはデッキ一覧の先頭である", () => {
-      render(<Body decks={decks} save={save} />);
+      render(DefaultBody);
 
       expect(
         (screen.getByTestId("window-deck-1p") as HTMLSelectElement)
@@ -28,7 +29,7 @@ describe("LP/Body", () => {
       ).toEqual("旋風BF");
     });
     it("初期状態のLPは8000である", () => {
-      render(<Body decks={decks} save={save} />);
+      render(DefaultBody);
 
       expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
       expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -36,9 +37,12 @@ describe("LP/Body", () => {
   });
 
   describe("LP計算", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
     describe("クイックLP減算", () => {
       it("お互いのLPが8000の状態で1PのLPを-1000すると1PのLPが7000になる。2PのLPは8000のまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -49,7 +53,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
       });
       it("お互いのLPが8000の状態で2PのLPを-2000すると1PのLPは8000のままだが2PのLPは6000になる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -60,7 +64,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("6000");
       });
       it("1PのLPが2000の状態で1PのLPを-3000すると1PのLPは0になる（マイナスにはならない）", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("-3000")[0]);
         await user.click(screen.getAllByText("-3000")[0]);
 
@@ -73,7 +77,7 @@ describe("LP/Body", () => {
     });
     describe("LP加算", () => {
       it("お互いがnormalモードで1Pの+キーを押すと1P側はテンキー配置になる。2Pはそのまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getAllByText("-50").length).toEqual(2);
         expect(screen.queryByText("7")).not.toBeInTheDocument();
@@ -84,7 +88,7 @@ describe("LP/Body", () => {
         expect(screen.getByText("7")).toBeInTheDocument();
       });
       it("LPが8000の状態で+1234を入力するとLP欄に8000+1234が表示される", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
 
@@ -100,7 +104,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
       });
       it("お互いのLPが8000の状態で1PのLPを+1234すると1PのLPは9234になる。2Pは8000のまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -116,7 +120,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
       });
       it("LP加算後はnormalモードに戻る", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("+")[0]);
 
         expect(screen.getByText("-50")).toBeInTheDocument();
@@ -129,7 +133,7 @@ describe("LP/Body", () => {
         expect(screen.queryByText("7")).not.toBeInTheDocument();
       });
       it("お互いのLPが8000の状態で2PのLPを+9000すると1PのLPは8000のままだが2PのLPは17000になる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -145,7 +149,7 @@ describe("LP/Body", () => {
       });
 
       it("LPが8000の状態で+100000すると1PのLPは108000になる（LPに上限はない）", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
 
@@ -163,7 +167,7 @@ describe("LP/Body", () => {
     });
     describe("LP減算", () => {
       it("お互いがnormalモードで1Pの-キーを押すと1P側はテンキー配置になる。2Pはそのまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getAllByText("-50").length).toEqual(2);
         expect(screen.queryByText("7")).not.toBeInTheDocument();
@@ -174,7 +178,7 @@ describe("LP/Body", () => {
         expect(screen.getByText("7")).toBeInTheDocument();
       });
       it("LPが8000の状態で-1234を入力するとLP欄に8000-1234が表示される", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
 
@@ -190,7 +194,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
       });
       it("お互いのLPが8000の状態で1PのLPを-1234すると1PのLPは6766になる。2Pは8000のまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -206,7 +210,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
       });
       it("LP減算後はnormalモードに戻る", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("-")[0]);
 
         expect(screen.getByText("-50")).toBeInTheDocument();
@@ -219,7 +223,7 @@ describe("LP/Body", () => {
         expect(screen.queryByText("7")).not.toBeInTheDocument();
       });
       it("お互いのLPが8000の状態で2PのLPを-1すると1PのLPは8000のままだが2PのLPは7999になる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -232,7 +236,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("7999");
       });
       it("LPが1233の状態でLPを-1234するとLPは0になる（マイナスにはならない）", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("-")[0]);
         await user.click(screen.getByText("6"));
         await user.click(screen.getByText("7"));
@@ -254,7 +258,7 @@ describe("LP/Body", () => {
     });
     describe("加減算モードのキャンセル", () => {
       it("加算モードでキャンセルするとnormalモードになる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("+")[0]);
 
         expect(screen.getByText("7")).toBeInTheDocument();
@@ -266,7 +270,7 @@ describe("LP/Body", () => {
         expect(screen.getAllByText("-50").length).toEqual(2);
       });
       it("減算モードでLP入力中にキャンセルするとnormalモードになり入力していたLPもクリアされる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("-")[1]);
         await user.click(screen.getByText("1"));
 
@@ -283,7 +287,7 @@ describe("LP/Body", () => {
         expect(screen.getAllByText("-50").length).toEqual(2);
       });
       it("1Pが加算モード、2Pが減算モードの状態で2P側をキャンセルすると1Pは加算モードのままだが2Pはnormalモードになる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("+")[0]);
         await user.click(screen.getAllByText("1")[0]);
         await user.click(screen.getAllByText("-")[1]);
@@ -308,7 +312,7 @@ describe("LP/Body", () => {
         expect(screen.getByText("-50")).toBeInTheDocument();
       });
       it("加算モードでLP入力中にキャンセルし加算モードに戻ると入力したLPはクリアされる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("+")[0]);
         await user.click(screen.getByText("1"));
 
@@ -324,7 +328,7 @@ describe("LP/Body", () => {
     });
     describe("LP半分", () => {
       it("お互いのLPが8000の状態で1PのLPを半分にすると1PのLPは4000になる。2PのLPは8000のまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -335,7 +339,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
       });
       it("お互いのLPが8000の状態で2PのLPを半分にすると1PのLPは8000のままだが2PのLPは4000になる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
@@ -346,7 +350,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-2p").textContent).toEqual("4000");
       });
       it("LPが奇数の状態でLPを半分にするとLPは切り上げられる", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("-")[0]);
         await user.click(screen.getByText("1"));
         await user.click(screen.getByText("="));
@@ -358,7 +362,7 @@ describe("LP/Body", () => {
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("4000");
       });
       it("LPが1の状態でLPを半分にしてもLPは1のまま", async () => {
-        render(<Body decks={decks} save={save} />);
+        render(DefaultBody);
         await user.click(screen.getAllByText("-")[0]);
         await user.click(screen.getByText("7"));
         await user.click(screen.getByText("9"));
