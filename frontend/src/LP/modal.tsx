@@ -25,7 +25,7 @@ export const useHistoryModal = () => {
     const logs = lpHistory.logs.map(({ playerID, from, to }, i) => {
       return (
         <ListGroup.Item variant={i === head ? "dark" : ""} key={i}>
-          <div className="modal-log">
+          <div className="modal-log" data-testid="modal-log">
             <div className="modal-player-name">
               {playerID === 1 ? player1.deck : player2.deck} ({playerID}P)
             </div>
