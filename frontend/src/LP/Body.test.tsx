@@ -34,6 +34,13 @@ describe("LP/Body", () => {
       expect(screen.getByTestId("window-lp-1p").textContent).toEqual("8000");
       expect(screen.getByTestId("window-lp-2p").textContent).toEqual("8000");
     });
+    it("初期状態のログは空である", async () => {
+      render(DefaultBody);
+
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+    });
   });
 
   describe("LP計算", () => {
@@ -376,6 +383,27 @@ describe("LP/Body", () => {
 
         expect(screen.getByTestId("window-lp-1p").textContent).toEqual("1");
       });
+    });
+  });
+
+  describe("ログ", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("初期状態で1PのLPを減算すると1Pの減算ログが追加される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
     });
   });
 });
