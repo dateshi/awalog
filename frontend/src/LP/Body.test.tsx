@@ -13,20 +13,14 @@ describe("LP/Body", () => {
     it("初期状態ではundo/redoボタンは非活性化状態である", () => {
       render(DefaultBody);
 
-      expect(screen.getByTestId("undo") as HTMLButtonElement).toBeDisabled();
-      expect(screen.getByTestId("redo") as HTMLButtonElement).toBeDisabled();
+      expect(screen.getByTestId("undo")).toBeDisabled();
+      expect(screen.getByTestId("redo")).toBeDisabled();
     });
     it("初期状態の選択中デッキはデッキ一覧の先頭である", () => {
       render(DefaultBody);
 
-      expect(
-        (screen.getByTestId("window-deck-1p") as HTMLSelectElement)
-          .selectedOptions[0].textContent
-      ).toEqual("旋風BF");
-      expect(
-        (screen.getByTestId("window-deck-2p") as HTMLSelectElement)
-          .selectedOptions[0].textContent
-      ).toEqual("旋風BF");
+      expect(screen.getByTestId("window-deck-1p")).toHaveDisplayValue("旋風BF");
+      expect(screen.getByTestId("window-deck-2p")).toHaveDisplayValue("旋風BF");
     });
     it("初期状態のLPは8000である", () => {
       render(DefaultBody);
