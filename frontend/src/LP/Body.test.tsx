@@ -381,11 +381,15 @@ describe("LP/Body", () => {
   });
 
   describe("ログ", () => {
-    const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    const DefaultBody = (props: { decks: string[] }) => (
+      <Body decks={props.decks} save={jest.fn()} />
     );
     it("初期状態で1PのLPを減算すると1Pの減算ログが追加される", async () => {
-      render(DefaultBody);
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.selectOptions(
+        screen.getByTestId("window-deck-2p"),
+        "代行天使"
+      );
       await user.click(screen.getByText("ログ"));
 
       expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
@@ -395,6 +399,132 @@ describe("LP/Body", () => {
       await user.click(screen.getByText("ログ"));
 
       expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
+    });
+    it("初期状態で2PのLPを加算すると2Pの加算ログが追加される", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.selectOptions(
+        screen.getByTestId("window-deck-2p"),
+        "代行天使"
+      );
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getAllByText("+")[1]);
+      await user.click(screen.getByText("1"));
+      await user.click(screen.getByText("="));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "代行天使 (2P)"
+      );
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 8001 (+1)"
+      );
+    });
+    it("初期状態で1PのLPを減算した後に2PのLPを加算すると2P加算、1P減算の順でログが表示される", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.selectOptions(
+        screen.getByTestId("window-deck-2p"),
+        "代行天使"
+      );
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("+")[1]);
+      await user.click(screen.getByText("1"));
+      await user.click(screen.getByText("="));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "代行天使 (2P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "8000 → 8001 (+1)"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
+    });
+    it("LPを半減するとLPの半分に対応する減算としてログに記録される", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getAllByText("1/2")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 4000 (-4000)"
+      );
+    });
+    it("LPを10回減算した後にさらにもう一度LPを減算すると最初の減算ログは表示されない（直近10件の減算ログのみ表示される）", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-100")[0]);
+      await user.click(screen.getAllByText("-200")[0]);
+      await user.click(screen.getAllByText("-300")[0]);
+      await user.click(screen.getAllByText("-400")[0]);
+      await user.click(screen.getAllByText("-500")[0]);
+      await user.click(screen.getAllByText("-600")[0]);
+      await user.click(screen.getAllByText("-800")[0]);
+      await user.click(screen.getAllByText("-900")[0]);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log").length).toEqual(10);
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "8000 → 7950 (-50)"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getAllByText("-2000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log").length).toEqual(10);
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "7950 → 7850 (-100)"
+      );
+    });
+    it("1PのLPを減算した後に1Pのデッキを変更すると変更後のデッキで減算ログが表示される", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.selectOptions(
+        screen.getByTestId("window-deck-1p"),
+        "代行天使"
+      );
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "代行天使 (1P)"
+      );
       expect(screen.getByTestId("modal-log")).toHaveTextContent(
         "8000 → 7000 (-1000)"
       );
