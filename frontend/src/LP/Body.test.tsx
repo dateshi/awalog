@@ -530,4 +530,93 @@ describe("LP/Body", () => {
       );
     });
   });
+
+  describe("リセット", () => {
+    const DefaultBody = (props: { decks: string[] }) => (
+      <Body decks={props.decks} save={jest.fn()} />
+    );
+    it("1PのLPが7000, 2PのLPが6000の状態でリセットすると両者のLPは8000になる", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("6000");
+
+      await user.click(screen.getByText("リセット"));
+      await user.click(screen.getByText("はい"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("8000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("8000");
+    });
+    it("1PのLPが7000, 2PのLPが6000の状態でリセットをキャンセルすると1PのLPは7000, 2PのLPは6000のまま", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("6000");
+
+      await user.click(screen.getByText("リセット"));
+      await user.click(screen.getByText("いいえ"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("6000");
+    });
+    it("1Pのデッキを旋風BF（初期状態）から代行天使に変更した状態でリセットしても1Pのデッキは旋風BFのまま", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.selectOptions(
+        screen.getByTestId("window-deck-1p"),
+        "代行天使"
+      );
+
+      expect(screen.getByTestId("window-deck-1p")).toHaveDisplayValue(
+        "代行天使"
+      );
+
+      await user.click(screen.getByText("リセット"));
+      await user.click(screen.getByText("はい"));
+
+      expect(screen.getByTestId("window-deck-1p")).toHaveDisplayValue(
+        "代行天使"
+      );
+    });
+    it("LP減算ログが記録されている状態でリセットするとログは空になる", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("リセット"));
+      await user.click(screen.getByText("はい"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+    });
+    it("LP減算ログが記録されている状態でリセットをキャンセルするとLP減算ログは残ったまま", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("リセット"));
+      await user.click(screen.getByText("いいえ"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
+      expect(screen.getByTestId("modal-log")).toHaveTextContent(
+        "8000 → 7000 (-1000)"
+      );
+    });
+  });
 });
