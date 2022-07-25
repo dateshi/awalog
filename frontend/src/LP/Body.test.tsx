@@ -690,7 +690,6 @@ describe("LP/Body", () => {
       await user.click(screen.getByText("戻る"));
       await user.click(screen.getByText("ログ"));
 
-      expect(screen.getByTestId("modal-log")).toBeInTheDocument();
       expect(screen.getByTestId("modal-log")).not.toHaveClass(
         "list-group-item-dark"
       );
@@ -878,6 +877,104 @@ describe("LP/Body", () => {
         "7800 → 7750 (-50)"
       );
       expect(screen.getAllByTestId("modal-log")[4]).toHaveClass(
+        "list-group-item-dark"
+      );
+    });
+  });
+
+  describe("進む", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("初期状態から1PのLPを-1000し戻るを押した後に進むを押すと1PのLPは7000に戻る", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("8000");
+
+      await user.click(screen.getByText("進む"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+    });
+    it("初期状態から1PのLPを-1000しても進むボタンは非活性のまま", async () => {
+      render(DefaultBody);
+
+      expect(screen.getByText("進む")).toBeDisabled();
+
+      await user.click(screen.getAllByText("-1000")[0]);
+
+      expect(screen.getByText("進む")).toBeDisabled();
+    });
+    it("初期状態から1PのLPを-1000し戻るボタンを押した後に進むボタンを押すと進むボタンは非活性になる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByText("進む")).toBeEnabled();
+
+      await user.click(screen.getByText("進む"));
+
+      expect(screen.getByText("進む")).toBeDisabled();
+    });
+    it("初期状態から1PのLPを-1000, 2PのLPを-2000し戻るを2回押した後に進むを押すと1PのLPは7000で2PのLPは8000になる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("8000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("8000");
+
+      await user.click(screen.getByText("進む"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("8000");
+    });
+    it("初期状態からLPを減算し戻るを押した後に進むを押すとLP減算ログは色塗りはされる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("戻る")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).not.toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("進む"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveClass(
+        "list-group-item-dark"
+      );
+    });
+    it("初期状態からLPを2回減算し戻るを2回押した後に進むを押すとログは2つ表示されたままだが1回目の減算ログが色塗りされる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(2);
+      expect(screen.getAllByTestId("modal-log")[0]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("進む"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(2);
+      expect(screen.getAllByTestId("modal-log")[0]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).toHaveClass(
         "list-group-item-dark"
       );
     });
