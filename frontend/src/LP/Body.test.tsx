@@ -517,6 +517,24 @@ describe("LP/Body", () => {
         "8000 → 7000 (-1000)"
       );
     });
+    it("1PのLPを減算した後に2PのLPを減算すると2PのLP減算ログが色塗りされて表示される", async () => {
+      render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.queryByTestId("modal-log")).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+    });
   });
 
   describe("リセット", () => {
@@ -604,6 +622,263 @@ describe("LP/Body", () => {
       expect(screen.getByTestId("modal-log")).toHaveTextContent("旋風BF (1P)");
       expect(screen.getByTestId("modal-log")).toHaveTextContent(
         "8000 → 7000 (-1000)"
+      );
+    });
+  });
+
+  describe("戻る", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("初期状態から1PのLPを-1000した後に戻るを押すと1PのLPは8000に戻る", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("8000");
+    });
+    it("初期状態から1PのLPを-1000した後に戻るを押すと戻るボタンは非活性になる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+
+      expect(screen.getByText("戻る")).toBeEnabled();
+
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByText("戻る")).toBeDisabled();
+    });
+    it("初期状態から1PのLPを-1000しさらに2PのLPを-2000した後に戻るを押すと1PのLPは7000のままだが2PのLPは8000に戻る", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("6000");
+
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("8000");
+    });
+    it("初期状態から1PのLPを-1000しさらに2PのLPを-2000した後に戻るを2回押すと1Pと2PのLPは8000に戻る", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("7000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("6000");
+
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("8000");
+      expect(screen.getByTestId("window-lp-2p")).toHaveTextContent("8000");
+    });
+    it("初期状態からLPを減算した後に戻るを押すとログは残ったままだが色塗りはされていない", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getByTestId("modal-log")).toBeInTheDocument();
+      expect(screen.getByTestId("modal-log")).not.toHaveClass(
+        "list-group-item-dark"
+      );
+    });
+    it("初期状態からLPを2回減算した後に戻るを押すとログは2つ表示されたままだが1回目の減算ログが色塗りされる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[1]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(2);
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(2);
+      expect(screen.getAllByTestId("modal-log")[0]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).toHaveClass(
+        "list-group-item-dark"
+      );
+    });
+    it("LPを11回減算した後に戻るを押すと直近10件の減算ログのみ表示され最新の一つ前の減算ログが色塗りされる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-100")[0]);
+      await user.click(screen.getAllByText("-200")[0]);
+      await user.click(screen.getAllByText("-300")[0]);
+      await user.click(screen.getAllByText("-400")[0]);
+      await user.click(screen.getAllByText("-500")[0]);
+      await user.click(screen.getAllByText("-600")[0]);
+      await user.click(screen.getAllByText("-800")[0]);
+      await user.click(screen.getAllByText("-900")[0]);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(10);
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "7950 → 7850 (-100)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      await user.click(screen.getByText("戻る"));
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(10);
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "7950 → 7850 (-100)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).not.toHaveClass(
+        "list-group-item-dark"
+      );
+      expect(screen.getAllByTestId("modal-log")[1]).toHaveClass(
+        "list-group-item-dark"
+      );
+    });
+    it("LPを11回減算した後に戻るを9回押すとさ最新のLP減算ログを除いた10件が表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-100")[0]);
+      await user.click(screen.getAllByText("-200")[0]);
+      await user.click(screen.getAllByText("-300")[0]);
+      await user.click(screen.getAllByText("-400")[0]);
+      await user.click(screen.getAllByText("-500")[0]);
+      await user.click(screen.getAllByText("-600")[0]);
+      await user.click(screen.getAllByText("-800")[0]);
+      await user.click(screen.getAllByText("-900")[0]);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(10);
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "3150 → 1150 (-2000)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "7950 → 7850 (-100)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      [...Array(9)].forEach(async () => {
+        await user.click(screen.getByText("戻る"));
+      });
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(10);
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "4150 → 3150 (-1000)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "8000 → 7950 (-50)"
+      );
+      expect(screen.getAllByTestId("modal-log")[8]).toHaveClass(
+        "list-group-item-dark"
+      );
+    });
+    it("LPを15回減算した後に5回戻るを押すと最新から数えて2回目〜11回目のLP減算ログが表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-50")[0]);
+      await user.click(screen.getAllByText("-100")[0]);
+      await user.click(screen.getAllByText("-200")[0]);
+      await user.click(screen.getAllByText("-300")[0]);
+      await user.click(screen.getAllByText("-400")[0]);
+      await user.click(screen.getAllByText("-500")[0]);
+      await user.click(screen.getAllByText("-600")[0]);
+      await user.click(screen.getAllByText("-800")[0]);
+      await user.click(screen.getAllByText("-900")[0]);
+      await user.click(screen.getAllByText("-1000")[0]);
+      await user.click(screen.getAllByText("-2000")[0]);
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "2950 → 950 (-2000)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "7750 → 7650 (-100)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveClass(
+        "list-group-item-dark"
+      );
+
+      await user.click(screen.getByLabelText("Close"));
+      [...Array(5)].forEach(async () => {
+        await user.click(screen.getByText("戻る"));
+      });
+      await user.click(screen.getByText("ログ"));
+
+      expect(screen.getAllByTestId("modal-log")).toHaveLength(10);
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[0]).toHaveTextContent(
+        "3950 → 2950 (-1000)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "旋風BF (1P)"
+      );
+      expect(screen.getAllByTestId("modal-log")[9]).toHaveTextContent(
+        "7800 → 7750 (-50)"
+      );
+      expect(screen.getAllByTestId("modal-log")[4]).toHaveClass(
+        "list-group-item-dark"
       );
     });
   });
