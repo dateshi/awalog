@@ -1007,4 +1007,30 @@ describe("LP/Body", () => {
       expect(screen.queryByText("コイントス結果")).not.toBeInTheDocument();
     });
   });
+
+  describe("サイコロ", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("サイコロを押すとサイコロ結果モーダルが表示される", async () => {
+      render(DefaultBody);
+
+      expect(screen.queryByText("サイコロ結果")).not.toBeInTheDocument();
+
+      await user.click(screen.getByText("サイコロ"));
+
+      expect(screen.getByText("サイコロ結果")).toBeInTheDocument();
+      expect(screen.getByText(/(1|2|3|4|5|6)が出ました/)).toBeInTheDocument();
+    });
+    it("サイコロ結果モーダルでXボタンを押すとモーダルは閉じる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getByText("サイコロ"));
+
+      expect(screen.getByText("サイコロ結果")).toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+
+      expect(screen.queryByText("サイコロ結果")).not.toBeInTheDocument();
+    });
+  });
 });
