@@ -979,4 +979,32 @@ describe("LP/Body", () => {
       );
     });
   });
+
+  describe("コイン", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("コインを押すとコイントス結果モーダルが表示される", async () => {
+      render(DefaultBody);
+
+      expect(screen.queryByText("コイントス結果")).not.toBeInTheDocument();
+
+      await user.click(screen.getByText("コイン"));
+
+      expect(screen.getByText("コイントス結果")).toBeInTheDocument();
+      expect(
+        screen.getByText(/((オモテ)|(ウラ))が出ました/)
+      ).toBeInTheDocument();
+    });
+    it("コイントス結果モーダルでXボタンを押すとモーダルは閉じる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getByText("コイン"));
+
+      expect(screen.getByText("コイントス結果")).toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Close"));
+
+      expect(screen.queryByText("コイントス結果")).not.toBeInTheDocument();
+    });
+  });
 });
