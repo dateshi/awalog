@@ -1033,4 +1033,47 @@ describe("LP/Body", () => {
       expect(screen.queryByText("サイコロ結果")).not.toBeInTheDocument();
     });
   });
+
+  describe("保存確認", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("1PのLPが0になると保存確認モーダルが表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+
+      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+
+      await user.click(screen.getAllByText("-3000")[0]);
+
+      expect(screen.getByText("保存確認")).toBeInTheDocument();
+    });
+    it("2PのLPが0になると保存確認モーダルが表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+
+      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+
+      await user.click(screen.getAllByText("-3000")[1]);
+
+      expect(screen.getByText("保存確認")).toBeInTheDocument();
+    });
+    it("1PのLPを0にし保存確認モーダルを閉じた後に戻るを押し再び1PのLPを0にすると保存確認モーダルが表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getByText("いいえ"));
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("2000");
+      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+
+      await user.click(screen.getAllByText("-3000")[0]);
+
+      expect(screen.getByText("保存確認")).toBeInTheDocument();
+    });
+  });
 });
