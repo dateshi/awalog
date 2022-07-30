@@ -1,5 +1,11 @@
+import Summary from "./Summary";
+
 const Body = () => {
-  return <>Stats</>;
+  return (
+    <>
+      <Summary />
+    </>
+  );
 };
 
 export default Body;
