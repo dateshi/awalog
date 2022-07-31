@@ -1,9 +1,14 @@
+import { Player } from "../LP/helper";
 import Summary from "./Summary";
 
-const Body = () => {
+type Props = {
+  results: [Player, Player][];
+};
+
+const Body = (props: Props) => {
   return (
     <>
-      <Summary />
+      <Summary results={props.results} />
     </>
   );
 };
