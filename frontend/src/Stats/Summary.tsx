@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Player } from "../LP/helper";
+import { Result } from "../result";
 
 ChartJS.register(
   CategoryScale,
@@ -20,10 +20,10 @@ ChartJS.register(
 );
 
 type Props = {
-  results: [Player, Player][];
+  results: Result[];
 };
 
-const calcSummary = (results: [Player, Player][]) => {
+const calcSummary = (results: Result[]) => {
   const summary: Record<string, { total: number; win: number }> = {};
   results.forEach(([p1, p2]) => {
     if (p1.deck in summary) {

@@ -1,7 +1,7 @@
 import { Container } from "react-bootstrap";
 import "./style.scss";
 import Toolbar from "./Toolbar";
-import { Player, useLPHistory, usePlayer } from "./helper";
+import { useLPHistory, usePlayer } from "./helper";
 import Side from "./Side";
 import {
   useCoinModal,
@@ -10,10 +10,11 @@ import {
   useResetModal,
   useSaveModal,
 } from "./modal";
+import { Result } from "../result";
 
 type Props = {
   decks: string[];
-  save: (p1: Player, p2: Player) => void;
+  save: (result: Result) => void;
 };
 
 const Body = (props: Props) => {
@@ -60,7 +61,7 @@ const Body = (props: Props) => {
           <Side decks={decks} player={p2} ctl={ctl2} isLeft={false}></Side>
         </div>
       </Container>
-      <SaveModal p1={p1} p2={p2} />
+      <SaveModal result={[p1, p2]} />
       <LPHistoryModal lpHistory={lpHistory} player1={p1} player2={p2} />
       <ResetModal reset={reset} />
       <CoinModal />

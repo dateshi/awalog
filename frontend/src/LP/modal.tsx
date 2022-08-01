@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, ListGroup, Modal } from "react-bootstrap";
+import { Result } from "../result";
 import { LPHistory, Player } from "./helper";
 
 const toStringWithSign = (x: number) => {
@@ -136,11 +137,10 @@ export const useDiceModal = () => {
 };
 
 type SaveProps = {
-  p1: Player;
-  p2: Player;
+  result: Result;
 };
 
-export const useSaveModal = (save: (p1: Player, p2: Player) => void) => {
+export const useSaveModal = (save: (result: Result) => void) => {
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
   const SaveModal = (props: SaveProps) => (
@@ -150,7 +150,7 @@ export const useSaveModal = (save: (p1: Player, p2: Player) => void) => {
       <Modal.Footer>
         <Button
           onClick={() => {
-            save(props.p1, props.p2);
+            save(props.result);
             close();
           }}
         >

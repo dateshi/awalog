@@ -1,8 +1,8 @@
-import { Player } from "../LP/helper";
+import { Result } from "../result";
 import Summary from "./Summary";
 
 type Props = {
-  results: [Player, Player][];
+  results: Result[];
 };
 
 const Body = (props: Props) => {
