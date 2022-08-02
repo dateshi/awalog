@@ -36,6 +36,16 @@ const Stats = () => {
         lp: 8000,
       },
     ],
+    [
+      {
+        deck: "旋風BF",
+        lp: 0,
+      },
+      {
+        deck: "六武衆",
+        lp: 0,
+      },
+    ],
   ];
 
   return (
