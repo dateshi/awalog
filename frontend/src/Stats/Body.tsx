@@ -1,4 +1,5 @@
 import { Result } from "../result";
+import Sidebar from "./Sidebar";
 import Summary from "./Summary";
 
 type Props = {
@@ -7,9 +8,10 @@ type Props = {
 
 const Body = (props: Props) => {
   return (
-    <>
+    <div className="body">
+      <Sidebar />
       <Summary results={props.results} />
-    </>
+    </div>
   );
 };
 

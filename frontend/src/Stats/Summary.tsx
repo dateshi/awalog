@@ -58,7 +58,7 @@ const Summary = (props: Props) => {
   const lose = Object.values(summary).map(({ lose }) => lose);
   const draw = Object.values(summary).map(({ draw }) => draw);
   return (
-    <>
+    <div className="main">
       <Bar
         options={{
           scales: {
@@ -128,7 +128,7 @@ const Summary = (props: Props) => {
           ],
         }}
       />
-    </>
+    </div>
   );
 };
 
