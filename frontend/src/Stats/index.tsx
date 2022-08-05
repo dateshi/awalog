@@ -5,7 +5,7 @@ import "./style.scss";
 
 const Stats = () => {
   // TODO: APIで取得したデッキ一覧にする
-  const decks = ["旋風BF", "墓地BF", "ヒーロービート", "代行天使"];
+  const decks = ["旋風BF", "代行天使", "ヒーロービート", "六武衆"];
 
   // TODO: APIで取得した結果一覧にする
   const results: Result[] = [

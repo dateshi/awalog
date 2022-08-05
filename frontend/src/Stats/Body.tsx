@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Result } from "../result";
+import Detail from "./Detail";
 import Sidebar from "./Sidebar";
 import Summary from "./Summary";
 
@@ -14,7 +15,11 @@ const Body = (props: Props) => {
   return (
     <div className="body">
       <Sidebar decks={decks} selectedDeck={deck} setDeck={setDeck} />
-      <Summary results={results} />
+      {deck === "サマリー" ? (
+        <Summary results={results} />
+      ) : (
+        <Detail results={results} deck={deck} />
+      )}
     </div>
   );
 };
