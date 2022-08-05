@@ -21,7 +21,7 @@ const Sidebar = (props: Props) => {
         </Nav.Link>
       </Nav.Item>
       {decks.map((deck) => (
-        <Nav.Item>
+        <Nav.Item key={deck}>
           <Nav.Link eventKey={deck} active={selectedDeck === deck}>
             {deck}
           </Nav.Link>
