@@ -9,6 +9,8 @@ import {
   Legend,
 } from "chart.js";
 import { Result } from "../result";
+import WPChart from "./WPChart";
+import NumberChart from "./NumberChart";
 
 ChartJS.register(
   CategoryScale,
@@ -59,78 +61,13 @@ const Summary = (props: Props) => {
   const draw = Object.values(summary).map(({ draw }) => draw);
   return (
     <div className="main">
-      <Bar
-        width={800}
-        height={350}
-        options={{
-          scales: {
-            y: {
-              title: {
-                display: true,
-                text: "勝率[%]",
-              },
-            },
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: "各デッキの勝率",
-            },
-            legend: {
-              display: false,
-            },
-          },
-        }}
-        data={{
-          labels: decks,
-          datasets: [
-            {
-              label: "勝率",
-              data: wp,
-              backgroundColor: "rgba(53, 162, 235, 0.5)",
-            },
-          ],
-        }}
-      />
-      <Bar
-        width={800}
-        height={350}
-        options={{
-          scales: {
-            x: {
-              stacked: true,
-            },
-            y: {
-              stacked: true,
-            },
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: "各デッキの勝利数・敗北数・引き分け数",
-            },
-          },
-        }}
-        data={{
-          labels: decks,
-          datasets: [
-            {
-              label: "勝利数",
-              data: win,
-              backgroundColor: "rgba(53, 162, 235, 0.5)",
-            },
-            {
-              label: "敗北数",
-              data: lose,
-              backgroundColor: "rgb(255, 99, 132, 0.5)",
-            },
-            {
-              label: "引き分け数",
-              data: draw,
-              backgroundColor: "rgb(75, 192, 192, 0.5)",
-            },
-          ],
-        }}
+      <WPChart title="各デッキの勝率" decks={decks} wp={wp} />
+      <NumberChart
+        title="各デッキの勝利数・敗北数・引き分け数"
+        decks={decks}
+        win={win}
+        lose={lose}
+        draw={draw}
       />
     </div>
   );
