@@ -62,6 +62,8 @@ const Detail = (props: Props) => {
   return (
     <div className="main">
       <Bar
+        width={800}
+        height={350}
         options={{
           scales: {
             y: {
@@ -93,6 +95,8 @@ const Detail = (props: Props) => {
         }}
       />
       <Bar
+        width={800}
+        height={350}
         options={{
           scales: {
             x: {
