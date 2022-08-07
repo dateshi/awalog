@@ -74,7 +74,7 @@ const Detail = (props: Props) => {
           plugins: {
             title: {
               display: true,
-              text: `各デッキに対する${deck}の勝率`,
+              text: `${deck}の各デッキに対する勝率`,
             },
             legend: {
               display: false,
@@ -105,7 +105,7 @@ const Detail = (props: Props) => {
           plugins: {
             title: {
               display: true,
-              text: `各デッキに対する${deck}の勝利数・敗北数・引き分け数`,
+              text: `${deck}の各デッキに対する勝利数・敗北数・引き分け数`,
             },
           },
         }}
