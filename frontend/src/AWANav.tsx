@@ -12,7 +12,7 @@ const AWANav = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
             <Nav.Link as={Link} to="/stats">
-              統計
+              戦績
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
