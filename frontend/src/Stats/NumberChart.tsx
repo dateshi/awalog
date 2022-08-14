@@ -12,7 +12,7 @@ const NumberChart = (props: Props) => {
   const { title, decks, win, lose, draw } = props;
   return (
     <Bar
-      width={800}
+      width={700}
       height={350}
       options={{
         scales: {

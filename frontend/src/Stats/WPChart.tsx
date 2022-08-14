@@ -10,7 +10,7 @@ const WPChart = (props: Props) => {
   const { title, decks, wp } = props;
   return (
     <Bar
-      width={800}
+      width={700}
       height={350}
       options={{
         scales: {
