@@ -69,6 +69,9 @@ describe("Stats/Body", () => {
     );
     it("戦績が空の場合、グラフは空", async () => {
       render(<DefaultBody results={[]} decks={["旋風BF", "代行天使"]} />);
+
+      expect(screen.getByText("サマリー")).toHaveClass("active");
+
       expect(screen.queryByText(/.*:.*=/)).not.toBeInTheDocument();
     });
     it("旋風BF勝ち代行天使負けの戦績のみ存在する場合、旋風BFの勝率は100%で勝利数1敗北数0引き分け数0、代行天使の勝率は0%で勝利数0敗北数1引き分け数0", async () => {
@@ -83,6 +86,9 @@ describe("Stats/Body", () => {
           decks={["旋風BF", "代行天使"]}
         />
       );
+
+      expect(screen.getByText("サマリー")).toHaveClass("active");
+
       expect(screen.getByText("勝率:旋風BF=100")).toBeInTheDocument();
       expect(screen.getByText("勝利数:旋風BF=1")).toBeInTheDocument();
       expect(screen.getByText("敗北数:旋風BF=0")).toBeInTheDocument();
@@ -104,6 +110,9 @@ describe("Stats/Body", () => {
           decks={["旋風BF", "代行天使"]}
         />
       );
+
+      expect(screen.getByText("サマリー")).toHaveClass("active");
+
       expect(screen.getByText("勝率:旋風BF=0")).toBeInTheDocument();
       expect(screen.getByText("勝利数:旋風BF=0")).toBeInTheDocument();
       expect(screen.getByText("敗北数:旋風BF=0")).toBeInTheDocument();
@@ -133,6 +142,9 @@ describe("Stats/Body", () => {
           decks={["旋風BF", "代行天使", "ヒーロービート"]}
         />
       );
+
+      expect(screen.getByText("サマリー")).toHaveClass("active");
+
       expect(screen.getByText("勝率:旋風BF=100")).toBeInTheDocument();
       expect(screen.getByText("勝利数:旋風BF=2")).toBeInTheDocument();
       expect(screen.getByText("敗北数:旋風BF=0")).toBeInTheDocument();
@@ -144,6 +156,97 @@ describe("Stats/Body", () => {
       expect(screen.getByText("勝率:ヒーロービート=0")).toBeInTheDocument();
       expect(screen.getByText("勝利数:ヒーロービート=0")).toBeInTheDocument();
       expect(screen.getByText("敗北数:ヒーロービート=2")).toBeInTheDocument();
+      expect(
+        screen.getByText("引き分け数:ヒーロービート=0")
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("戦績個別表示", () => {
+    const DefaultBody = (props: { results: Result[]; decks: string[] }) => (
+      <Body results={props.results} decks={props.decks} />
+    );
+    it("戦績が空の場合、旋風BFの個別戦績グラフは空", async () => {
+      render(<DefaultBody results={[]} decks={["旋風BF", "代行天使"]} />);
+      await user.click(screen.getByText("旋風BF"));
+
+      expect(screen.getByText("旋風BF")).toHaveClass("active");
+
+      expect(screen.queryByText(/.*:.*=/)).not.toBeInTheDocument();
+    });
+    it("旋風BF勝ち代行天使負けの戦績のみ存在する場合の旋風BF個別戦績: 代行天使に対する勝率100%勝利数1敗北数0引き分け数0", async () => {
+      render(
+        <DefaultBody
+          results={[
+            [
+              { deck: "旋風BF", lp: 1000 },
+              { deck: "代行天使", lp: 0 },
+            ],
+          ]}
+          decks={["旋風BF", "代行天使"]}
+        />
+      );
+      await user.click(screen.getByText("旋風BF"));
+
+      expect(screen.getByText("旋風BF")).toHaveClass("active");
+
+      expect(screen.getByText("勝率:代行天使=100")).toBeInTheDocument();
+      expect(screen.getByText("勝利数:代行天使=1")).toBeInTheDocument();
+      expect(screen.getByText("敗北数:代行天使=0")).toBeInTheDocument();
+      expect(screen.getByText("引き分け数:代行天使=0")).toBeInTheDocument();
+    });
+    it("旋風BF勝ち代行天使負けの戦績のみ存在する場合の代行天使個別戦績: 旋風BFに対する勝率0%勝利数0敗北数1引き分け数0", async () => {
+      render(
+        <DefaultBody
+          results={[
+            [
+              { deck: "旋風BF", lp: 1000 },
+              { deck: "代行天使", lp: 0 },
+            ],
+          ]}
+          decks={["旋風BF", "代行天使"]}
+        />
+      );
+      await user.click(screen.getByText("代行天使"));
+
+      expect(screen.getByText("代行天使")).toHaveClass("active");
+
+      expect(screen.getByText("勝率:旋風BF=0")).toBeInTheDocument();
+      expect(screen.getByText("勝利数:旋風BF=0")).toBeInTheDocument();
+      expect(screen.getByText("敗北数:旋風BF=1")).toBeInTheDocument();
+      expect(screen.getByText("引き分け数:旋風BF=0")).toBeInTheDocument();
+    });
+    it("戦績が旋風BF勝ちと代行天使負け、旋風BF勝ちとヒーロービート負け、代行天使勝ちとヒーロービート負けの場合の代行天使の個別戦績: 旋風BFに対する勝率0%勝利数0敗北数1引き分け数0、ヒーロービートに対する勝率100%勝利数1敗北数0引き分け数0", async () => {
+      render(
+        <DefaultBody
+          results={[
+            [
+              { deck: "旋風BF", lp: 1000 },
+              { deck: "代行天使", lp: 0 },
+            ],
+            [
+              { deck: "ヒーロービート", lp: 0 },
+              { deck: "旋風BF", lp: 2000 },
+            ],
+            [
+              { deck: "代行天使", lp: 6500 },
+              { deck: "ヒーロービート", lp: 0 },
+            ],
+          ]}
+          decks={["旋風BF", "代行天使", "ヒーロービート"]}
+        />
+      );
+      await user.click(screen.getByText("代行天使"));
+
+      expect(screen.getByText("代行天使")).toHaveClass("active");
+
+      expect(screen.getByText("勝率:旋風BF=0")).toBeInTheDocument();
+      expect(screen.getByText("勝率:ヒーロービート=100")).toBeInTheDocument();
+      expect(screen.getByText("勝利数:旋風BF=0")).toBeInTheDocument();
+      expect(screen.getByText("勝利数:ヒーロービート=1")).toBeInTheDocument();
+      expect(screen.getByText("敗北数:旋風BF=1")).toBeInTheDocument();
+      expect(screen.getByText("敗北数:ヒーロービート=0")).toBeInTheDocument();
+      expect(screen.getByText("引き分け数:旋風BF=0")).toBeInTheDocument();
       expect(
         screen.getByText("引き分け数:ヒーロービート=0")
       ).toBeInTheDocument();
