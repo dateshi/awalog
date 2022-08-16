@@ -42,6 +42,11 @@ const Body = (props: Props) => {
     ctl1.reset();
     ctl2.reset();
   };
+  const result = {
+    decks: [p1.deck, p2.deck],
+    duel: [{ lp: p1.lp }, { lp: p2.lp }],
+    format: "Single",
+  } as Result;
 
   return (
     <>
@@ -61,7 +66,7 @@ const Body = (props: Props) => {
           <Side decks={decks} player={p2} ctl={ctl2} isLeft={false}></Side>
         </div>
       </Container>
-      <SaveModal result={[p1, p2]} />
+      <SaveModal result={result} />
       <LPHistoryModal lpHistory={lpHistory} player1={p1} player2={p2} />
       <ResetModal reset={reset} />
       <CoinModal />

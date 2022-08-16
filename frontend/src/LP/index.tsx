@@ -9,8 +9,7 @@ const LP = () => {
 
   // TODO: APIで結果を保存
   const save = (result: Result) => {
-    console.log(result[0]);
-    console.log(result[1]);
+    console.log(result);
   };
 
   return (

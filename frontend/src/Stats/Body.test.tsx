@@ -78,10 +78,14 @@ describe("Stats/Body", () => {
       render(
         <DefaultBody
           results={[
-            [
-              { deck: "旋風BF", lp: 1000 },
-              { deck: "代行天使", lp: 0 },
-            ],
+            {
+              decks: ["旋風BF", "代行天使"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
           ]}
           decks={["旋風BF", "代行天使"]}
         />
@@ -102,10 +106,15 @@ describe("Stats/Body", () => {
       render(
         <DefaultBody
           results={[
-            [
-              { deck: "旋風BF", lp: 0 },
-              { deck: "代行天使", lp: 0 },
-            ],
+            {
+              decks: ["旋風BF", "代行天使"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 0 }, { lp: 2000 }],
+                [{ lp: 0 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
           ]}
           decks={["旋風BF", "代行天使"]}
         />
@@ -126,18 +135,30 @@ describe("Stats/Body", () => {
       render(
         <DefaultBody
           results={[
-            [
-              { deck: "旋風BF", lp: 1000 },
-              { deck: "代行天使", lp: 0 },
-            ],
-            [
-              { deck: "ヒーロービート", lp: 0 },
-              { deck: "旋風BF", lp: 2000 },
-            ],
-            [
-              { deck: "代行天使", lp: 6500 },
-              { deck: "ヒーロービート", lp: 0 },
-            ],
+            {
+              decks: ["旋風BF", "代行天使"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
+            {
+              decks: ["ヒーロービート", "旋風BF"],
+              match: [
+                [{ lp: 0 }, { lp: 1000 }],
+                [{ lp: 0 }, { lp: 2000 }],
+              ],
+              format: "Match",
+            },
+            {
+              decks: ["代行天使", "ヒーロービート"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
           ]}
           decks={["旋風BF", "代行天使", "ヒーロービート"]}
         />
@@ -178,10 +199,14 @@ describe("Stats/Body", () => {
       render(
         <DefaultBody
           results={[
-            [
-              { deck: "旋風BF", lp: 1000 },
-              { deck: "代行天使", lp: 0 },
-            ],
+            {
+              decks: ["旋風BF", "代行天使"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
           ]}
           decks={["旋風BF", "代行天使"]}
         />
@@ -199,10 +224,14 @@ describe("Stats/Body", () => {
       render(
         <DefaultBody
           results={[
-            [
-              { deck: "旋風BF", lp: 1000 },
-              { deck: "代行天使", lp: 0 },
-            ],
+            {
+              decks: ["旋風BF", "代行天使"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
           ]}
           decks={["旋風BF", "代行天使"]}
         />
@@ -220,18 +249,30 @@ describe("Stats/Body", () => {
       render(
         <DefaultBody
           results={[
-            [
-              { deck: "旋風BF", lp: 1000 },
-              { deck: "代行天使", lp: 0 },
-            ],
-            [
-              { deck: "ヒーロービート", lp: 0 },
-              { deck: "旋風BF", lp: 2000 },
-            ],
-            [
-              { deck: "代行天使", lp: 6500 },
-              { deck: "ヒーロービート", lp: 0 },
-            ],
+            {
+              decks: ["旋風BF", "代行天使"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
+            {
+              decks: ["ヒーロービート", "旋風BF"],
+              match: [
+                [{ lp: 0 }, { lp: 1000 }],
+                [{ lp: 0 }, { lp: 2000 }],
+              ],
+              format: "Match",
+            },
+            {
+              decks: ["代行天使", "ヒーロービート"],
+              match: [
+                [{ lp: 1000 }, { lp: 0 }],
+                [{ lp: 2000 }, { lp: 0 }],
+              ],
+              format: "Match",
+            },
           ]}
           decks={["旋風BF", "代行天使", "ヒーロービート"]}
         />

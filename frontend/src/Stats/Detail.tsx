@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Result } from "../result";
+import { findWinner, Result } from "../result";
 import WPChart from "./WPChart";
 import NumberChart from "./NumberChart";
 
@@ -30,21 +30,23 @@ const calcStats = (results: Result[], deck: string) => {
     {};
   results
     .filter(
-      ([p1, p2]) =>
-        (p1.deck === deck && p2.deck !== deck) ||
-        (p1.deck !== deck, p2.deck === deck)
+      ({ decks }) =>
+        (decks[0] === deck && decks[1] !== deck) ||
+        (decks[0] !== deck && decks[1] === deck)
     )
-    .forEach(([p1, p2]) => {
-      const [you, opponent] = p1.deck === deck ? [p1, p2] : [p2, p1];
-      if (!(opponent.deck in summary)) {
-        summary[opponent.deck] = { win: 0, lose: 0, draw: 0 };
+    .forEach((result) => {
+      const { decks } = result;
+      const [you, opponent] = decks[0] === deck ? [0, 1] : [1, 0];
+      if (!(decks[opponent] in summary)) {
+        summary[decks[opponent]] = { win: 0, lose: 0, draw: 0 };
       }
-      if (you.lp > 0) {
-        summary[opponent.deck].win++;
-      } else if (opponent.lp > 0) {
-        summary[opponent.deck].lose++;
+      const i = findWinner(result);
+      if (i === -1) {
+        summary[decks[opponent]].draw++;
+      } else if (i === you) {
+        summary[decks[opponent]].win++;
       } else {
-        summary[opponent.deck].draw++;
+        summary[decks[opponent]].lose++;
       }
     });
   return summary;

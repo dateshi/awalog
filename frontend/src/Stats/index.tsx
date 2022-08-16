@@ -9,46 +9,41 @@ const Stats = () => {
 
   // TODO: APIで取得した結果一覧にする
   const results: Result[] = [
-    [
-      {
-        deck: "旋風BF",
-        lp: 5000,
-      },
-      {
-        deck: "代行天使",
-        lp: 0,
-      },
-    ],
-    [
-      {
-        deck: "ヒーロービート",
-        lp: 5000,
-      },
-      {
-        deck: "六武衆",
-        lp: 0,
-      },
-    ],
-    [
-      {
-        deck: "旋風BF",
-        lp: 0,
-      },
-      {
-        deck: "ヒーロービート",
-        lp: 8000,
-      },
-    ],
-    [
-      {
-        deck: "旋風BF",
-        lp: 0,
-      },
-      {
-        deck: "六武衆",
-        lp: 0,
-      },
-    ],
+    {
+      decks: ["旋風BF", "代行天使"],
+      match: [
+        [{ lp: 5000 }, { lp: 0 }],
+        [{ lp: 0 }, { lp: 2000 }],
+        [{ lp: 8000 }, { lp: 0 }],
+      ],
+      format: "Match",
+    },
+    {
+      decks: ["ヒーロービート", "六武衆"],
+      match: [
+        [{ lp: 5000 }, { lp: 0 }],
+        [{ lp: 100 }, { lp: 0 }],
+      ],
+      format: "Match",
+    },
+    {
+      decks: ["旋風BF", "ヒーロービート"],
+      match: [
+        [{ lp: 0 }, { lp: 8000 }],
+        [{ lp: 1250 }, { lp: 0 }],
+        [{ lp: 0 }, { lp: 8000 }],
+      ],
+      format: "Match",
+    },
+    {
+      decks: ["旋風BF", "六武衆"],
+      match: [
+        [{ lp: 0 }, { lp: 2000 }],
+        [{ lp: 2000 }, { lp: 0 }],
+        [{ lp: 0 }, { lp: 0 }],
+      ],
+      format: "Match",
+    },
   ];
 
   return (

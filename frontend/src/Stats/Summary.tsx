@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Result } from "../result";
+import { findWinner, Result } from "../result";
 import WPChart from "./WPChart";
 import NumberChart from "./NumberChart";
 
@@ -27,23 +27,22 @@ type Props = {
 const calcSummary = (results: Result[]) => {
   const summary: Record<string, { win: number; lose: number; draw: number }> =
     {};
-  results.forEach(([p1, p2]) => {
-    if (!(p1.deck in summary)) {
-      summary[p1.deck] = { win: 0, lose: 0, draw: 0 };
+  results.forEach((result) => {
+    const { decks } = result;
+    if (!(decks[0] in summary)) {
+      summary[decks[0]] = { win: 0, lose: 0, draw: 0 };
     }
-    if (!(p2.deck in summary)) {
-      summary[p2.deck] = { win: 0, lose: 0, draw: 0 };
+    if (!(decks[1] in summary)) {
+      summary[decks[1]] = { win: 0, lose: 0, draw: 0 };
     }
 
-    if (p1.lp > 0) {
-      summary[p1.deck].win++;
-      summary[p2.deck].lose++;
-    } else if (p2.lp > 0) {
-      summary[p1.deck].lose++;
-      summary[p2.deck].win++;
+    const i = findWinner(result);
+    if (i === -1) {
+      summary[decks[0]].draw++;
+      summary[decks[1]].draw++;
     } else {
-      summary[p1.deck].draw++;
-      summary[p2.deck].draw++;
+      summary[decks[i]].win++;
+      summary[decks[1 - i]].lose++;
     }
   });
   return summary;
