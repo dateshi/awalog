@@ -19,5 +19,21 @@ export const findWinner = (result: Result) => {
   if (result.format === 'Single') {
     return winner(result.duel);
   }
-  return winner(result.match[result.match.length - 1]);
+  const s = result.match.reduce((res, duel) => {
+    const w = winner(duel);
+    if (w === 0) {
+      return res + 1;
+    }
+    if (w === 1) {
+      return res - 1;
+    }
+    return res;
+  }, 0)
+  if (s > 0) {
+    return 0;
+  }
+  if (s < 0) {
+    return 1;
+  }
+  return -1;
 }

@@ -74,7 +74,7 @@ describe("Stats/Body", () => {
 
       expect(screen.queryByText(/.*:.*=/)).not.toBeInTheDocument();
     });
-    it("旋風BF勝ち代行天使負けの戦績のみ存在する場合、旋風BFの勝率は100%で勝利数1敗北数0引き分け数0、代行天使の勝率は0%で勝利数0敗北数1引き分け数0", async () => {
+    it("旋風BF対代行天使oo-の戦績のみ存在する場合、旋風BFの勝率は100%で勝利数1敗北数0引き分け数0、代行天使の勝率は0%で勝利数0敗北数1引き分け数0", async () => {
       render(
         <DefaultBody
           results={[
