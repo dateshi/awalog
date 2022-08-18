@@ -1,7 +1,33 @@
 import { findWinner } from "./result";
 
 describe('findWinner', () => {
-  describe('0番目のプレイヤーが勝利のパターン', () => {
+  describe('シングル', () => {
+    it('1番目のプレイヤーのみLPが0ならば0番目のプレイヤーの勝利', () => {
+      const winner = findWinner({
+        decks: ['旋風BF', '代行天使'],
+        duel: [{lp: 1000}, {lp: 0}],
+        format: 'Single',
+      });
+      expect(winner).toEqual(0);
+    });
+    it('0番目のプレイヤーのみLPが0ならば1番目のプレイヤーの勝利', () => {
+      const winner = findWinner({
+        decks: ['旋風BF', '代行天使'],
+        duel: [{lp: 0}, {lp: 2000}],
+        format: 'Single',
+      });
+      expect(winner).toEqual(1);
+    });
+    it('お互いのLPが0ならば引き分け', () => {
+      const winner = findWinner({
+        decks: ['旋風BF', '代行天使'],
+        duel: [{lp: 0}, {lp: 0}],
+        format: 'Single',
+      });
+      expect(winner).toEqual(-1);
+    });
+  });
+  describe('マッチ: 0番目のプレイヤーが勝利のパターン', () => {
     it('oo-のマッチは0番目のプレイヤーの勝利', () => {
       const winner = findWinner({
         decks: ['旋風BF', '代行天使'],
@@ -98,7 +124,7 @@ describe('findWinner', () => {
       expect(winner).toEqual(0)
     });
   });
-  describe('1番目のプレイヤーが勝利のパターン', () => {
+  describe('マッチ: 1番目のプレイヤーが勝利のパターン', () => {
     it('xx-のマッチは1番目のプレイヤーの勝利', () => {
       const winner = findWinner({
         decks: ['旋風BF', '代行天使'],
@@ -195,7 +221,7 @@ describe('findWinner', () => {
       expect(winner).toEqual(1)
     });
   });
-  describe('引き分けのパターン', () => {
+  describe('マッチ: 引き分けのパターン', () => {
     it('dddのマッチは引き分け', () => {
       const winner = findWinner({
         decks: ['旋風BF', '代行天使'],
