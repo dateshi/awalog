@@ -12,7 +12,7 @@ export const useResetModal = () => {
     <Modal show={showModal} onHide={close}>
       <Modal.Header>リセット確認</Modal.Header>
       <Modal.Body>
-        LPとログをリセットしてよいですか？ <br /> この操作は取り消しできません
+        新しいマッチ戦を開始してよいですか？ <br /> この操作は取り消しできません
       </Modal.Body>
       <Modal.Footer>
         <Button
