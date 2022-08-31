@@ -80,7 +80,7 @@ describe("Stats/Body", () => {
           results={[
             {
               decks: ["旋風BF", "代行天使"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],
@@ -108,7 +108,7 @@ describe("Stats/Body", () => {
           results={[
             {
               decks: ["旋風BF", "代行天使"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 0 }, { lp: 2000 }],
                 [{ lp: 0 }, { lp: 0 }],
@@ -137,7 +137,7 @@ describe("Stats/Body", () => {
           results={[
             {
               decks: ["旋風BF", "代行天使"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],
@@ -145,7 +145,7 @@ describe("Stats/Body", () => {
             },
             {
               decks: ["ヒーロービート", "旋風BF"],
-              match: [
+              duels: [
                 [{ lp: 0 }, { lp: 1000 }],
                 [{ lp: 0 }, { lp: 2000 }],
               ],
@@ -153,7 +153,7 @@ describe("Stats/Body", () => {
             },
             {
               decks: ["代行天使", "ヒーロービート"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],
@@ -201,7 +201,7 @@ describe("Stats/Body", () => {
           results={[
             {
               decks: ["旋風BF", "代行天使"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],
@@ -226,7 +226,7 @@ describe("Stats/Body", () => {
           results={[
             {
               decks: ["旋風BF", "代行天使"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],
@@ -251,7 +251,7 @@ describe("Stats/Body", () => {
           results={[
             {
               decks: ["旋風BF", "代行天使"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],
@@ -259,7 +259,7 @@ describe("Stats/Body", () => {
             },
             {
               decks: ["ヒーロービート", "旋風BF"],
-              match: [
+              duels: [
                 [{ lp: 0 }, { lp: 1000 }],
                 [{ lp: 0 }, { lp: 2000 }],
               ],
@@ -267,7 +267,7 @@ describe("Stats/Body", () => {
             },
             {
               decks: ["代行天使", "ヒーロービート"],
-              match: [
+              duels: [
                 [{ lp: 1000 }, { lp: 0 }],
                 [{ lp: 2000 }, { lp: 0 }],
               ],

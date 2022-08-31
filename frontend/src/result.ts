@@ -1,9 +1,8 @@
 type Player = {
   lp: number;
 }
-type Duel = [Player, Player];
-type Match = [Duel, Duel] | [Duel, Duel, Duel];
-export type Result = {decks: [string, string]} & ({ duel: Duel, format: 'Single'} | { match: Match, format: 'Match'});
+export type Duel = [Player, Player];
+export type Result = {decks: [string, string], duels: Duel[], format: 'Single' | 'Match'}
 
 const winner = (duel: Duel) => {
   if (duel[0].lp > 0) {
@@ -16,10 +15,18 @@ const winner = (duel: Duel) => {
 }
 
 export const findWinner = (result: Result) => {
+  const { duels } = result;
   if (result.format === 'Single') {
-    return winner(result.duel);
+    if (duels.length === 0) {
+      return null;
+    }
+    return winner(duels[0]);
   }
-  const s = result.match.reduce((res, duel) => {
+  // Matchの場合
+  if (duels.length <= 1) {
+    return null;
+  }
+  const s = result.duels.reduce((res, duel) => {
     const w = winner(duel);
     if (w === 0) {
       return res + 1;
@@ -28,7 +35,10 @@ export const findWinner = (result: Result) => {
       return res - 1;
     }
     return res;
-  }, 0)
+  }, 0);
+  if (duels.length === 2 && Math.abs(s) <= 1) {
+    return null;
+  }
   if (s > 0) {
     return 0;
   }

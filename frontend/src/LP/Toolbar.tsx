@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { LPHistory, LPHistoryCtl, PlayertCtl } from "./helper";
+import { LPHistory } from "./Game";
 import "./style.scss";
 
 const Reset = (props: { onClick: () => void }) => {
@@ -60,9 +60,8 @@ type Props = {
   showCoinModal: () => void;
   showDiceModal: () => void;
   lpHistory: LPHistory;
-  lpHistoryCtl: LPHistoryCtl;
-  player1Ctl: PlayertCtl;
-  player2Ctl: PlayertCtl;
+  undo: () => void;
+  redo: () => void;
 };
 
 const Toolbar = (props: Props) => {
@@ -72,20 +71,9 @@ const Toolbar = (props: Props) => {
     showCoinModal,
     showDiceModal,
     lpHistory,
-    lpHistoryCtl,
-    player1Ctl,
-    player2Ctl,
+    undo,
+    redo,
   } = props;
-  const undo = () => {
-    const log = lpHistoryCtl.undo();
-    player1Ctl.undoLP(log);
-    player2Ctl.undoLP(log);
-  };
-  const redo = () => {
-    const log = lpHistoryCtl.redo();
-    player1Ctl.redoLP(log);
-    player2Ctl.redoLP(log);
-  };
   return (
     <div className="toolbar">
       <Reset onClick={showResetModal} />

@@ -40,7 +40,7 @@ const calcSummary = (results: Result[]) => {
     if (i === -1) {
       summary[decks[0]].draw++;
       summary[decks[1]].draw++;
-    } else {
+    } else if (i !== null) {
       summary[decks[i]].win++;
       summary[decks[1 - i]].lose++;
     }

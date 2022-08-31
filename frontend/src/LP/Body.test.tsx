@@ -1034,33 +1034,41 @@ describe("LP/Body", () => {
     });
   });
 
-  describe("保存確認", () => {
+  describe("次デュエル確認", () => {
     const DefaultBody = (
       <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
     );
-    it("1PのLPが0になると保存確認モーダルが表示される", async () => {
+    it("マッチ1戦目で1PのLPが0になると次デュエル確認モーダルが表示される", async () => {
       render(DefaultBody);
       await user.click(screen.getAllByText("-3000")[0]);
       await user.click(screen.getAllByText("-3000")[0]);
 
-      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+      expect(screen.queryByText("デュエル終了")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("次のデュエルを開始してよいですか？")
+      ).not.toBeInTheDocument();
 
       await user.click(screen.getAllByText("-3000")[0]);
 
-      expect(screen.getByText("保存確認")).toBeInTheDocument();
+      expect(screen.getByText("デュエル終了")).toBeInTheDocument();
+      expect(
+        screen.getByText("次のデュエルを開始してよいですか？")
+      ).toBeInTheDocument();
     });
-    it("2PのLPが0になると保存確認モーダルが表示される", async () => {
+
+    it("1戦目は2Pが勝利したマッチの2戦目で2PのLPが0になると次デュエル確認モーダルが表示される", async () => {
       render(DefaultBody);
       await user.click(screen.getAllByText("-3000")[1]);
       await user.click(screen.getAllByText("-3000")[1]);
 
-      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+      expect(screen.queryByText("デュエル終了")).not.toBeInTheDocument();
 
       await user.click(screen.getAllByText("-3000")[1]);
 
-      expect(screen.getByText("保存確認")).toBeInTheDocument();
+      expect(screen.getByText("デュエル終了")).toBeInTheDocument();
     });
-    it("1PのLPを0にし保存確認モーダルを閉じた後に戻るを押し再び1PのLPを0にすると保存確認モーダルが表示される", async () => {
+
+    it("マッチ1戦目で1PのLPを0にし次デュエル確認モーダルを閉じた後に戻るを押し再び1PのLPを0にすると次デュエル確認モーダルが表示される", async () => {
       render(DefaultBody);
       await user.click(screen.getAllByText("-3000")[0]);
       await user.click(screen.getAllByText("-3000")[0]);
@@ -1069,11 +1077,99 @@ describe("LP/Body", () => {
       await user.click(screen.getByText("戻る"));
 
       expect(screen.getByTestId("window-lp-1p")).toHaveTextContent("2000");
+      expect(screen.queryByText("デュエル終了")).not.toBeInTheDocument();
+
+      await user.click(screen.getAllByText("-3000")[0]);
+
+      expect(screen.getByText("デュエル終了")).toBeInTheDocument();
+    });
+  });
+
+  describe("保存確認", () => {
+    const DefaultBody = (
+      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+    );
+    it("1Pが連敗すると保存確認モーダルが表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getByText("はい"));
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+
       expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("ゲーム結果を保存してよいですか？")
+      ).not.toBeInTheDocument();
 
       await user.click(screen.getAllByText("-3000")[0]);
 
       expect(screen.getByText("保存確認")).toBeInTheDocument();
+      expect(
+        screen.getByText("ゲーム結果を保存してよいですか？")
+      ).toBeInTheDocument();
+    });
+    it("2Pが連敗すると保存確認モーダルが表示される", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getByText("はい"));
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+
+      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("ゲーム結果を保存してよいですか？")
+      ).not.toBeInTheDocument();
+
+      await user.click(screen.getAllByText("-3000")[1]);
+
+      expect(screen.getByText("保存確認")).toBeInTheDocument();
+      expect(
+        screen.getByText("ゲーム結果を保存してよいですか？")
+      ).toBeInTheDocument();
+    });
+    it("3回引き分けでも保存確認モーダルが表示される", async () => {
+      render(DefaultBody);
+      // 1戦目
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getByText("いいえ"));
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getByText("はい"));
+      // 2戦目
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getByText("いいえ"));
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getByText("はい"));
+      // 3戦目
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getByText("いいえ"));
+      await user.click(screen.getAllByText("-3000")[1]);
+      await user.click(screen.getAllByText("-3000")[1]);
+
+      expect(screen.queryByText("保存確認")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("ゲーム結果を保存してよいですか？")
+      ).not.toBeInTheDocument();
+
+      await user.click(screen.getAllByText("-3000")[1]);
+
+      expect(screen.getByText("保存確認")).toBeInTheDocument();
+      expect(
+        screen.getByText("ゲーム結果を保存してよいですか？")
+      ).toBeInTheDocument();
     });
   });
 });

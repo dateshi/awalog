@@ -11,7 +11,7 @@ const Stats = () => {
   const results: Result[] = [
     {
       decks: ["旋風BF", "代行天使"],
-      match: [
+      duels: [
         [{ lp: 5000 }, { lp: 0 }],
         [{ lp: 0 }, { lp: 2000 }],
         [{ lp: 8000 }, { lp: 0 }],
@@ -20,7 +20,7 @@ const Stats = () => {
     },
     {
       decks: ["ヒーロービート", "六武衆"],
-      match: [
+      duels: [
         [{ lp: 5000 }, { lp: 0 }],
         [{ lp: 100 }, { lp: 0 }],
       ],
@@ -28,7 +28,7 @@ const Stats = () => {
     },
     {
       decks: ["旋風BF", "ヒーロービート"],
-      match: [
+      duels: [
         [{ lp: 0 }, { lp: 8000 }],
         [{ lp: 1250 }, { lp: 0 }],
         [{ lp: 0 }, { lp: 8000 }],
@@ -37,7 +37,7 @@ const Stats = () => {
     },
     {
       decks: ["旋風BF", "六武衆"],
-      match: [
+      duels: [
         [{ lp: 0 }, { lp: 2000 }],
         [{ lp: 2000 }, { lp: 0 }],
         [{ lp: 0 }, { lp: 0 }],

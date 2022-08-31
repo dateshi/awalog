@@ -1,11 +1,11 @@
 import Controller from "./Controller";
-import { Player, PlayertCtl } from "./helper";
+import { Player, PlayerCtl } from "./Game";
 import Window from "./Window";
 
 type Props = {
   decks: string[];
   player: Player;
-  ctl: PlayertCtl;
+  ctl: PlayerCtl;
   isLeft: boolean;
 };
 

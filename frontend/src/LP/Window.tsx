@@ -1,5 +1,5 @@
 import { Form, ProgressBar } from "react-bootstrap";
-import { Mode } from "./helper";
+import { Mode } from "./Game";
 
 type Props = {
   decks: string[];
