@@ -48,6 +48,35 @@
   margin-top: 10px;
 }
 
+.lp-result-left {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 130px;
+  margin-left: 10px;
+}
+
+@mixin lp-result {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 130px;
+}
+
+.lp-result-left {
+  @include lp-result;
+  margin-left: 10px;
+}
+
+.lp-result-right {
+  @include lp-result;
+  margin-right: 10px;
+}
+
+.lp-result-icon {
+  vertical-align: bottom;
+}
+
 .deck-selector {
   margin-bottom: 10px;
 }

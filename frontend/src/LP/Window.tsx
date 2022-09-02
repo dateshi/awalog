@@ -1,5 +1,6 @@
 import { Form, ProgressBar } from "react-bootstrap";
 import { Mode } from "./Game";
+import { BsCircle } from "react-icons/bs";
 
 type Props = {
   decks: string[];
@@ -24,8 +25,16 @@ const Window = (props: Props) => {
   })();
   const sign = buf === 0 || mode === "normal" ? "" : mode;
   const testID = isLeft ? "1p" : "2p";
+  const LPResult = (
+    <div className={isLeft ? "lp-result-left" : "lp-result-right"}>
+      <BsCircle size={40} />
+      <BsCircle size={40} />
+      <BsCircle size={40} />
+    </div>
+  );
   return (
     <div className={isLeft ? "lp-box-left" : "lp-box-right"}>
+      {!isLeft && LPResult}
       <div className="lp-parent bg-light text-black">
         <Form.Select
           size="lg"
@@ -43,6 +52,7 @@ const Window = (props: Props) => {
           buf !== 0 ? buf : ""
         }`}</div>
       </div>
+      {isLeft && LPResult}
     </div>
   );
 };
