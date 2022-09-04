@@ -179,7 +179,7 @@ const toStringWithSign = (x: number) => {
   }
 };
 
-const useSaveModal = (result: Result, save: (result: Result) => void) => {
+const useSaveModal = (save: () => void) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const closeSaveModal = () => setShowSaveModal(false);
   const SaveModal = () => (
@@ -189,7 +189,7 @@ const useSaveModal = (result: Result, save: (result: Result) => void) => {
       <Modal.Footer>
         <Button
           onClick={() => {
-            save(result);
+            save();
             closeSaveModal();
           }}
         >
@@ -271,15 +271,6 @@ export const useGame = (decks: string[], save: (result: Result) => void) => {
     format: "Match",
   });
 
-  const commit = () => {
-    setResult({
-      ...result,
-      duels: [...result.duels, [{ lp: player1.lp }, { lp: player2.lp }]],
-    });
-    player1Ctl.reset();
-    player2Ctl.reset();
-    historyCtl.reset();
-  };
   const reset = () => {
     historyCtl.reset();
     player1Ctl.reset();
@@ -290,9 +281,26 @@ export const useGame = (decks: string[], save: (result: Result) => void) => {
       format: "Match",
     });
   };
+  const commitGame = () => {
+    setResult({
+      ...result,
+      duels: [...result.duels, [{ lp: player1.lp }, { lp: player2.lp }]],
+    });
+    player1Ctl.reset();
+    player2Ctl.reset();
+    historyCtl.reset();
+  };
+  const saveGame = () => {
+    const newResult: Result = {
+      ...result,
+      duels: [...result.duels, [{ lp: player1.lp }, { lp: player2.lp }]],
+    };
+    setResult(newResult);
+    save(newResult);
+  };
 
-  const { NextGameModal, showNextGameModal } = useNextGameModal(commit);
-  const { SaveModal, showSaveModal } = useSaveModal(result, save);
+  const { NextGameModal, showNextGameModal } = useNextGameModal(commitGame);
+  const { SaveModal, showSaveModal } = useSaveModal(saveGame);
   const changeLP =
     <T,>(i: number, f: (...args: T[]) => [from: number, to: number]) =>
     (...args: T[]) => {
@@ -321,6 +329,7 @@ export const useGame = (decks: string[], save: (result: Result) => void) => {
     result.decks
   );
   return {
+    result,
     player1,
     ctl1: {
       ...player1Ctl,

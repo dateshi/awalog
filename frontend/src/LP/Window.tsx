@@ -1,6 +1,13 @@
 import { Form, ProgressBar } from "react-bootstrap";
 import { Mode } from "./Game";
-import { BsCircle } from "react-icons/bs";
+import {
+  BsCheckCircle,
+  BsCircle,
+  BsDashCircle,
+  BsXCircle,
+} from "react-icons/bs";
+
+import { ResultChar } from "../result";
 
 type Props = {
   decks: string[];
@@ -9,10 +16,28 @@ type Props = {
   mode: Mode;
   buf: number;
   isLeft: boolean;
+  results: ResultChar[];
+};
+
+const ResultIcon = ({ result }: { result: ResultChar | null }) => {
+  const size = 40;
+  const Icon = (() => {
+    if (result === "W") {
+      return BsCheckCircle;
+    }
+    if (result === "L") {
+      return BsXCircle;
+    }
+    if (result === "D") {
+      return BsDashCircle;
+    }
+    return BsCircle;
+  })();
+  return <Icon size={size} />;
 };
 
 const Window = (props: Props) => {
-  const { decks, setDeck, lp, mode, buf, isLeft } = props;
+  const { decks, setDeck, lp, mode, buf, isLeft, results } = props;
   const now = Math.floor(lp / 80);
   const variant = (() => {
     if (lp > 4000) {
@@ -27,9 +52,9 @@ const Window = (props: Props) => {
   const testID = isLeft ? "1p" : "2p";
   const LPResult = (
     <div className={isLeft ? "lp-result-left" : "lp-result-right"}>
-      <BsCircle size={40} />
-      <BsCircle size={40} />
-      <BsCircle size={40} />
+      <ResultIcon result={results.length >= 1 ? results[0] : null} />
+      <ResultIcon result={results.length >= 2 ? results[1] : null} />
+      <ResultIcon result={results.length >= 3 ? results[2] : null} />
     </div>
   );
   return (

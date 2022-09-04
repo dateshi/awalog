@@ -4,7 +4,7 @@ import Toolbar from "./Toolbar";
 import { useGame } from "./Game";
 import Side from "./Side";
 import { useCoinModal, useDiceModal, useResetModal } from "./modal";
-import { Result } from "../result";
+import { Result, toResultChars } from "../result";
 
 type Props = {
   decks: string[];
@@ -17,6 +17,7 @@ const Body = (props: Props) => {
   const { CoinModal, showCoinModal } = useCoinModal();
   const { DiceModal, showDiceModal } = useDiceModal();
   const {
+    result,
     player1,
     ctl1,
     player2,
@@ -44,8 +45,20 @@ const Body = (props: Props) => {
           redo={redo}
         />
         <div className="sides">
-          <Side decks={decks} player={player1} ctl={ctl1} isLeft={true}></Side>
-          <Side decks={decks} player={player2} ctl={ctl2} isLeft={false}></Side>
+          <Side
+            decks={decks}
+            player={player1}
+            ctl={ctl1}
+            isLeft={true}
+            results={toResultChars(result, 0)}
+          />
+          <Side
+            decks={decks}
+            player={player2}
+            ctl={ctl2}
+            isLeft={false}
+            results={toResultChars(result, 1)}
+          />
         </div>
       </Container>
       <NextGameModal />

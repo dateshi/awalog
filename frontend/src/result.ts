@@ -3,6 +3,8 @@ type Player = {
 }
 export type Duel = [Player, Player];
 export type Result = {decks: [string, string], duels: Duel[], format: 'Single' | 'Match'}
+export type ResultChar = "W" | "L" | "D";
+
 
 const winner = (duel: Duel) => {
   if (duel[0].lp > 0) {
@@ -47,3 +49,14 @@ export const findWinner = (result: Result) => {
   }
   return -1;
 }
+
+export const toResultChars = (result: Result, i: 0 | 1): ResultChar[] =>
+  result.duels.map((duel) => {
+    if (duel[i].lp > 0) {
+      return "W"
+    }
+    if (duel[1 - i].lp > 0) {
+      return "L"
+    }
+    return "D"
+  });
