@@ -2,13 +2,16 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Body from "./Body";
+import { MemoryRouter } from "react-router-dom";
 
 describe("LP/Body", () => {
   const user = userEvent.setup();
 
   describe("初期状態", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("初期状態ではundo/redoボタンは非活性化状態である", () => {
       render(DefaultBody);
@@ -39,7 +42,9 @@ describe("LP/Body", () => {
 
   describe("LP計算", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     describe("クイックLP減算", () => {
       it("お互いのLPが8000の状態で1PのLPを-1000すると1PのLPが7000になる。2PのLPは8000のまま", async () => {
@@ -370,7 +375,9 @@ describe("LP/Body", () => {
 
   describe("ログ", () => {
     const DefaultBody = (props: { decks: string[] }) => (
-      <Body decks={props.decks} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={props.decks} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("初期状態で1PのLPを減算すると1Pの減算ログが追加される", async () => {
       render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
@@ -539,7 +546,9 @@ describe("LP/Body", () => {
 
   describe("リセット", () => {
     const DefaultBody = (props: { decks: string[] }) => (
-      <Body decks={props.decks} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={props.decks} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("1PのLPが7000, 2PのLPが6000の状態でリセットすると両者のLPは8000になる", async () => {
       render(<DefaultBody decks={["旋風BF", "代行天使"]} />);
@@ -628,7 +637,9 @@ describe("LP/Body", () => {
 
   describe("戻る", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("初期状態から1PのLPを-1000した後に戻るを押すと1PのLPは8000に戻る", async () => {
       render(DefaultBody);
@@ -884,7 +895,9 @@ describe("LP/Body", () => {
 
   describe("進む", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("初期状態から1PのLPを-1000し戻るを押した後に進むを押すと1PのLPは7000に戻る", async () => {
       render(DefaultBody);
@@ -982,7 +995,9 @@ describe("LP/Body", () => {
 
   describe("コイン", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("コインを押すとコイントス結果モーダルが表示される", async () => {
       render(DefaultBody);
@@ -1010,7 +1025,9 @@ describe("LP/Body", () => {
 
   describe("サイコロ", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("サイコロを押すとサイコロ結果モーダルが表示される", async () => {
       render(DefaultBody);
@@ -1034,9 +1051,66 @@ describe("LP/Body", () => {
     });
   });
 
+  describe("ナビゲーションバー", () => {
+    const DefaultBody = (
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
+    );
+    it("初期状態では戦績ページへのリンクがアクティブ", async () => {
+      render(DefaultBody);
+
+      expect(screen.getByText("戦績")).not.toHaveClass("disabled");
+    });
+    it("初期状態から1PのLPを-1000すると戦績ページへのリンクは非アクティブになる", async () => {
+      render(DefaultBody);
+
+      expect(screen.getByText("戦績")).not.toHaveClass("disabled");
+
+      await user.click(screen.getAllByText("-1000")[0]);
+
+      expect(screen.getByText("戦績")).toHaveClass("disabled");
+    });
+    it("初期状態から1PのLPを-1000した後に戻るボタンを押しても戦績ページへのリンクは非アクティブのまま", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+
+      expect(screen.getByText("戦績")).toHaveClass("disabled");
+
+      await user.click(screen.getByText("戻る"));
+
+      expect(screen.getByText("戦績")).toHaveClass("disabled");
+    });
+    it("マッチ1戦目が終わった直後の戦績ページへのリンクは非アクティブ", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getAllByText("-3000")[0]);
+
+      expect(screen.getByText("戦績")).toHaveClass("disabled");
+
+      await user.click(screen.getAllByText("-3000")[0]);
+      await user.click(screen.getByText("はい"));
+
+      expect(screen.getByText("戦績")).toHaveClass("disabled");
+    });
+    it("初期状態から1PのLPを-1000した後にリセットすると戦績ページへのリンクはアクティブになる", async () => {
+      render(DefaultBody);
+      await user.click(screen.getAllByText("-1000")[0]);
+
+      expect(screen.getByText("戦績")).toHaveClass("disabled");
+
+      await user.click(screen.getByText("リセット"));
+      await user.click(screen.getByText("はい"));
+
+      expect(screen.getByText("戦績")).not.toHaveClass("disabled");
+    });
+  });
+
   describe("次デュエル確認", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("マッチ1戦目で1PのLPが0になると次デュエル確認モーダルが表示される", async () => {
       render(DefaultBody);
@@ -1087,7 +1161,9 @@ describe("LP/Body", () => {
 
   describe("保存確認", () => {
     const DefaultBody = (
-      <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      <MemoryRouter>
+        <Body decks={["旋風BF", "代行天使"]} save={jest.fn()} />
+      </MemoryRouter>
     );
     it("1Pが連敗すると保存確認モーダルが表示される", async () => {
       render(DefaultBody);

@@ -1,4 +1,3 @@
-import AWANav from "../AWANav";
 import Body from "./Body";
 import "./style.scss";
 import { Result } from "../result";
@@ -12,12 +11,7 @@ const LP = () => {
     console.log(result);
   };
 
-  return (
-    <>
-      <AWANav />
-      <Body decks={decks} save={save} />
-    </>
-  );
+  return <Body decks={decks} save={save} />;
 };
 
 export default LP;

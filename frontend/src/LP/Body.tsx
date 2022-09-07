@@ -5,6 +5,7 @@ import { useGame } from "./Game";
 import Side from "./Side";
 import { useCoinModal, useDiceModal, useResetModal } from "./modal";
 import { Result, toResultChars } from "../result";
+import AWANav from "../AWANav";
 
 type Props = {
   decks: string[];
@@ -30,10 +31,12 @@ const Body = (props: Props) => {
     SaveModal,
     LPHistoryModal,
     showLPHistoryModal,
+    isPlaying,
   } = useGame(decks, save);
 
   return (
     <>
+      <AWANav disabledStats={isPlaying} />
       <Container>
         <Toolbar
           showResetModal={showResetModal}

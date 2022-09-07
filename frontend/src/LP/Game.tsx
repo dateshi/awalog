@@ -328,6 +328,9 @@ export const useGame = (decks: string[], save: (result: Result) => void) => {
     lpHistory,
     result.decks
   );
+
+  const isPlaying = result.duels.length > 0 || lpHistory.logs.length > 0;
+
   return {
     result,
     player1,
@@ -368,5 +371,6 @@ export const useGame = (decks: string[], save: (result: Result) => void) => {
     SaveModal,
     LPHistoryModal,
     showLPHistoryModal,
+    isPlaying,
   };
 };
